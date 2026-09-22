@@ -1,0 +1,28 @@
+# pi-terminal-headless — initial runtime plan
+
+Package-side half of Agent Code's
+`docs/superpowers/plans/2026-09-22-pi-terminal-harness.md` (Tasks 2–5 and 12)
+and its spec `docs/decomposition/pi-terminal.md` (Stages 0–5, bridge rules §6,
+reconciliation rules §5.4). Those two documents are the source of truth; this
+file only records package-local execution notes, so it does not duplicate the
+design (the two would drift).
+
+Tracking issue: Juliusolsson05/agent-code#1132.
+
+## Order
+
+1. Scaffold (this commit): contract scripts, CI/release/upstream-watch callers,
+   support/, README.
+2. Stage 0: sandboxed probe + recordings + oracle (`scripts/probe-live.mts`,
+   `testing/fixtures/`, `research/`).
+3. Stage 1: `src/transcript/` (durable reader, active branch).
+4. Stage 2: `src/bridge/` + `src/live/` (bridge extension, socket server,
+   projector).
+5. Stage 3: `src/reconcile/`, root class, launch, conditions, channels.
+6. Stage 5: opt-in live tier.
+7. Stage 12: MCP tool proxy inside the bridge.
+
+## Execution notes
+
+- 2026-09-22 — repository created public (approved), scaffold copied from
+  opencode-terminal-headless at 75536312.
