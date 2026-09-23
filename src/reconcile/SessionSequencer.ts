@@ -66,7 +66,13 @@ export class SessionSequencer {
   private sessionId: string
   private index = new TreeIndex()
   private cursor = new BranchCursor()
-  private leafOverride: string | undefined
+  /**
+   * The live /tree leaf, when it differs from the last row. `null` is a real
+   * value: moving to before the first entry leaves Pi with an EMPTY branch
+   * (agent-session.js navigates to the root message's parentId, null, then
+   * resetLeaf()). `undefined` means "no override: use the last row".
+   */
+  private leafOverride: string | null | undefined
   /** Seed (don't emit) the first read of the file we attached to. */
   private seedNextRead: boolean
   private turnId: string | null = null
@@ -115,7 +121,10 @@ export class SessionSequencer {
     if (this.disposed || file !== this.file) return // rule 5
     for (const row of rows) this.index.add(row)
     // A /tree override holds only until a row lands on its branch (H6).
-    if (this.leafOverride && this.index.branch().some(row => row.id === this.leafOverride)) this.leafOverride = undefined
+    if (typeof this.leafOverride === 'string' && this.index.branch().some(row => row.id === this.leafOverride)) this.leafOverride = undefined
+    // After a move to the root, Pi's next row starts a new branch at the
+    // leaf, so any row that lands ends the override.
+    if (this.leafOverride === null && rows.length > 0) this.leafOverride = undefined
     if (this.seedNextRead) {
       this.seedNextRead = false
       this.cursor.seed(this.currentBranch().map(row => row.id))
@@ -222,7 +231,7 @@ export class SessionSequencer {
         this.safe(() => this.sink.dialogs(output.dialog, output.trustPending))
         break
       case 'leaf':
-        this.leafOverride = output.leafId ?? undefined
+        this.leafOverride = output.leafId
         this.emitBranchChange()
         break
       case 'session':

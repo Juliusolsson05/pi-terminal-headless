@@ -490,7 +490,10 @@ function bridgeState(pi: AnyPi): BridgeState | undefined {
   delete process.env[BRIDGE_SOCKET_ENV]
   delete process.env[BRIDGE_TOKEN_ENV]
   // Loaded without a host (someone ran `pi -e bridge.ts` by hand): inert.
+  // The MCP credentials are scrubbed on this path too: they must never
+  // outlive the bridge in an env the model's bash tool can read.
   if (!socketPath || !token) {
+    readMcpServers()
     holder[STATE_KEY] = null
     return undefined
   }
@@ -625,6 +628,12 @@ function handleRequestUnsafe(state: BridgeState, id: number, request: BridgeRequ
       return
     }
     const compact = COMPACT_COMMAND.exec(text)
+    if (compact && typeof c?.compact !== 'function') {
+      // Never fall back to sendUserMessage: that would hand the model the
+      // literal text while the host believes a compaction started.
+      reply(state, id, false, 'this pi exposes no compaction API to extensions')
+      return
+    }
     if (!compact && c && c.model === undefined) {
       reply(state, id, false, 'pi has no model selected')
       return

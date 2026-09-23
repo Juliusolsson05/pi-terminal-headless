@@ -256,6 +256,23 @@ describe('bridge extension ↔ host', () => {
     await new Promise(r => setTimeout(r, 400)) // first reconnect attempts fire and fail quietly
   })
 
+  it('inert without a host, and still scrubs Agent Code MCP credentials from the env', () => {
+    delete process.env[BRIDGE_SOCKET_ENV]
+    process.env[MCP_SERVERS_ENV] = JSON.stringify([{ name: 'agent_code', url: 'http://127.0.0.1:1/mcp', headerEnv: { Authorization: 'AGENT_CODE_MCP_0_0' } }])
+    process.env.AGENT_CODE_MCP_0_0 = 'Bearer leaked'
+    agentCodeBridge(new FakePi())
+    expect(process.env[MCP_SERVERS_ENV]).toBeUndefined()
+    expect(process.env.AGENT_CODE_MCP_0_0).toBeUndefined()
+  })
+
+  it('/compact on a pi without the compaction API is refused, never sent to the model as text', async () => {
+    const pi = new FakePi()
+    const ctx = await started(pi)
+    delete (ctx as Record<string, unknown>).compact
+    await expect(server.prompt('/compact')).rejects.toMatchObject({ code: 'rejected' })
+    expect(pi.sent).toEqual([])
+  })
+
   it('without the env (someone ran pi -e by hand) the extension is inert', () => {
     delete process.env[BRIDGE_SOCKET_ENV]
     delete process.env[BRIDGE_TOKEN_ENV]
