@@ -1,0 +1,838 @@
+{
+ "meta": {
+  "recordedWith": "0.87.1",
+  "scenario": "dialog",
+  "recordedAt": "2026-09-23",
+  "node": "v24.14.1",
+  "platform": "darwin-arm64",
+  "terminal": "@xterm/headless",
+  "cols": 100,
+  "rows": 30
+ },
+ "sessionIdLaunched": "bc467de4-9008-4e67-890f-c5928190171f",
+ "notes": [],
+ "steps": [
+  {
+   "t": 12,
+   "action": "spawn",
+   "detail": {
+    "process": 1,
+    "args": [
+     "--provider",
+     "faux",
+     "--model",
+     "faux-1",
+     "-e",
+     "<scripts>/probe/faux.ts",
+     "-e",
+     "<scripts>/probe/recorder.ts",
+     "--session-id",
+     "bc467de4-9008-4e67-890f-c5928190171f"
+    ]
+   }
+  },
+  {
+   "t": 320,
+   "action": "waited",
+   "detail": {
+    "label": "session_start #1"
+   }
+  },
+  {
+   "t": 974,
+   "action": "type",
+   "detail": {
+    "text": "before dialog"
+   }
+  },
+  {
+   "t": 975,
+   "action": "key",
+   "detail": {
+    "name": "enter"
+   }
+  },
+  {
+   "t": 1026,
+   "action": "waited",
+   "detail": {
+    "label": "agent_settled #1"
+   }
+  },
+  {
+   "t": 1330,
+   "action": "type",
+   "detail": {
+    "text": "/probe-confirm"
+   }
+  },
+  {
+   "t": 1330,
+   "action": "key",
+   "detail": {
+    "name": "enter"
+   }
+  },
+  {
+   "t": 1357,
+   "action": "waited",
+   "detail": {
+    "label": "dialog open"
+   }
+  },
+  {
+   "t": 1762,
+   "action": "screen",
+   "detail": {
+    "lines": [
+     "",
+     " Probe dialog                                                                                       ",
+     " Proceed with the probe?                                                                            ",
+     "",
+     " → Yes                                                                                              ",
+     "   No                                                                                               ",
+     "",
+     " ↑↓ navigate  enter select  escape/ctrl+c cancel                                                    ",
+     "",
+     "────────────────────────────────────────────────────────────────────────────────────────────────────",
+     "/sandbox/project (master)",
+     "↑1.5k ↓8 W1.5k CH0.0% 2.4%/128k (auto)                                                        faux-1"
+    ]
+   }
+  },
+  {
+   "t": 1762,
+   "action": "key",
+   "detail": {
+    "name": "enter"
+   }
+  },
+  {
+   "t": 1788,
+   "action": "waited",
+   "detail": {
+    "label": "dialog closed"
+   }
+  },
+  {
+   "t": 2092,
+   "action": "key",
+   "detail": {
+    "name": "ctrl-d"
+   }
+  },
+  {
+   "t": 2170,
+   "action": "waited",
+   "detail": {
+    "label": "exit after ctrl-d"
+   }
+  }
+ ],
+ "events": [
+  {
+   "t": 311,
+   "name": "session_start",
+   "idle": true,
+   "pending": false,
+   "sessionId": "bc467de4-9008-4e67-890f-c5928190171f",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl",
+   "leafId": "fb7255e4",
+   "fileBytes": -1,
+   "keys": [
+    "reason",
+    "type"
+   ],
+   "reason": "startup"
+  },
+  {
+   "t": 311,
+   "name": "resources_discover",
+   "idle": true,
+   "pending": false,
+   "sessionId": "bc467de4-9008-4e67-890f-c5928190171f",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl",
+   "leafId": "fb7255e4",
+   "fileBytes": -1,
+   "keys": [
+    "cwd",
+    "reason",
+    "type"
+   ],
+   "cwd": "/sandbox/project",
+   "reason": "startup"
+  },
+  {
+   "t": 980,
+   "name": "input",
+   "idle": true,
+   "pending": false,
+   "sessionId": "bc467de4-9008-4e67-890f-c5928190171f",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl",
+   "leafId": "fb7255e4",
+   "fileBytes": -1,
+   "keys": [
+    "images",
+    "source",
+    "streamingBehavior",
+    "text",
+    "type"
+   ],
+   "source": "interactive",
+   "textLength": 13,
+   "probeTag": null
+  },
+  {
+   "t": 981,
+   "name": "before_agent_start",
+   "idle": true,
+   "pending": false,
+   "sessionId": "bc467de4-9008-4e67-890f-c5928190171f",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl",
+   "leafId": "fb7255e4",
+   "fileBytes": -1,
+   "keys": [
+    "images",
+    "prompt",
+    "systemPrompt",
+    "systemPromptOptions",
+    "type"
+   ],
+   "prompt": "before dialog"
+  },
+  {
+   "t": 982,
+   "name": "agent_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bc467de4-9008-4e67-890f-c5928190171f",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl",
+   "leafId": "fb7255e4",
+   "fileBytes": -1,
+   "keys": [
+    "type"
+   ]
+  },
+  {
+   "t": 982,
+   "name": "turn_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bc467de4-9008-4e67-890f-c5928190171f",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl",
+   "leafId": "fb7255e4",
+   "fileBytes": -1,
+   "keys": [
+    "timestamp",
+    "turnIndex",
+    "type"
+   ],
+   "turnIndex": 0,
+   "timestamp": 1790121799452
+  },
+  {
+   "t": 982,
+   "name": "message_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bc467de4-9008-4e67-890f-c5928190171f",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl",
+   "leafId": "fb7255e4",
+   "fileBytes": -1,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "system",
+    "contentTypes": "string",
+    "timestamp": 1790121799451
+   }
+  },
+  {
+   "t": 982,
+   "name": "message_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bc467de4-9008-4e67-890f-c5928190171f",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl",
+   "leafId": "fb7255e4",
+   "fileBytes": -1,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "system",
+    "contentTypes": "string",
+    "timestamp": 1790121799451
+   }
+  },
+  {
+   "t": 982,
+   "name": "message_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bc467de4-9008-4e67-890f-c5928190171f",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl",
+   "leafId": "c1a550dd",
+   "fileBytes": -1,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "user",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121799451
+   }
+  },
+  {
+   "t": 983,
+   "name": "message_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bc467de4-9008-4e67-890f-c5928190171f",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl",
+   "leafId": "c1a550dd",
+   "fileBytes": -1,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "user",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121799451
+   }
+  },
+  {
+   "t": 984,
+   "name": "message_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bc467de4-9008-4e67-890f-c5928190171f",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl",
+   "leafId": "1a23f657",
+   "fileBytes": -1,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "assistant",
+    "stopReason": "pending",
+    "contentTypes": [],
+    "toolCallIds": [],
+    "timestamp": 1790121799454
+   }
+  },
+  {
+   "t": 984,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bc467de4-9008-4e67-890f-c5928190171f",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl",
+   "leafId": "1a23f657",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_start"
+  },
+  {
+   "t": 997,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bc467de4-9008-4e67-890f-c5928190171f",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl",
+   "leafId": "1a23f657",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_delta"
+  },
+  {
+   "t": 1006,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bc467de4-9008-4e67-890f-c5928190171f",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl",
+   "leafId": "1a23f657",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_delta"
+  },
+  {
+   "t": 1006,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bc467de4-9008-4e67-890f-c5928190171f",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl",
+   "leafId": "1a23f657",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_end"
+  },
+  {
+   "t": 1006,
+   "name": "message_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bc467de4-9008-4e67-890f-c5928190171f",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl",
+   "leafId": "1a23f657",
+   "fileBytes": -1,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "assistant",
+    "stopReason": "stop",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121799454
+   }
+  },
+  {
+   "t": 1007,
+   "name": "turn_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bc467de4-9008-4e67-890f-c5928190171f",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl",
+   "leafId": "a8d1f4be",
+   "fileBytes": 7429,
+   "keys": [
+    "context",
+    "continue",
+    "entries",
+    "message",
+    "messageEntryId",
+    "outcome",
+    "toolResultEntryIds",
+    "toolResults",
+    "turnIndex",
+    "type"
+   ],
+   "turnIndex": 0,
+   "messageEntryId": "a8d1f4be",
+   "toolResultEntryIds": [],
+   "message": {
+    "role": "assistant",
+    "stopReason": "stop",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121799454
+   }
+  },
+  {
+   "t": 1007,
+   "name": "agent_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bc467de4-9008-4e67-890f-c5928190171f",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl",
+   "leafId": "a8d1f4be",
+   "fileBytes": 7429,
+   "keys": [
+    "messages",
+    "type"
+   ],
+   "messageCount": 3
+  },
+  {
+   "t": 1007,
+   "name": "agent_before_settle",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bc467de4-9008-4e67-890f-c5928190171f",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl",
+   "leafId": "a8d1f4be",
+   "fileBytes": 7429,
+   "keys": [
+    "context",
+    "continue",
+    "entries",
+    "outcome",
+    "type"
+   ],
+   "outcome": "completed",
+   "continue": false
+  },
+  {
+   "t": 1007,
+   "name": "agent_settled",
+   "idle": true,
+   "pending": false,
+   "sessionId": "bc467de4-9008-4e67-890f-c5928190171f",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl",
+   "leafId": "a8d1f4be",
+   "fileBytes": 7429,
+   "keys": [
+    "type"
+   ]
+  },
+  {
+   "t": 1337,
+   "name": "ui_prompt_start",
+   "idle": true,
+   "pending": false,
+   "sessionId": "bc467de4-9008-4e67-890f-c5928190171f",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl",
+   "leafId": "a8d1f4be",
+   "fileBytes": 7429,
+   "keys": [
+    "kind",
+    "reason",
+    "title",
+    "type"
+   ],
+   "reason": "ui_prompt",
+   "kind": "confirm",
+   "title": "Probe dialog"
+  },
+  {
+   "t": 1763,
+   "name": "ui_prompt_end",
+   "idle": true,
+   "pending": false,
+   "sessionId": "bc467de4-9008-4e67-890f-c5928190171f",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl",
+   "leafId": "a8d1f4be",
+   "fileBytes": 7429,
+   "keys": [
+    "kind",
+    "reason",
+    "title",
+    "type"
+   ],
+   "reason": "ui_prompt",
+   "kind": "confirm",
+   "title": "Probe dialog"
+  },
+  {
+   "t": 1763,
+   "name": "probe_confirm_result",
+   "answer": true
+  },
+  {
+   "t": 2145,
+   "name": "session_shutdown",
+   "idle": true,
+   "pending": false,
+   "sessionId": "bc467de4-9008-4e67-890f-c5928190171f",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl",
+   "leafId": "a8d1f4be",
+   "fileBytes": 7429,
+   "keys": [
+    "reason",
+    "type"
+   ],
+   "reason": "quit"
+  }
+ ],
+ "growth": [
+  {
+   "t": 1016,
+   "file": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl",
+   "bytes": 7429
+  }
+ ],
+ "exits": [
+  {
+   "t": 2149,
+   "process": 1,
+   "exitCode": 0,
+   "signal": 0
+  }
+ ],
+ "pty": {
+  "chunks": 41,
+  "bytes": 8574,
+  "da1HandAnswered": 0,
+  "screen": [
+   "Warning: No project session found with id 'bc467de4-9008-4e67-890f-c5928190171f'; creating a new ses",
+   "sion with that id.",
+   "",
+   " pi v0.87.1                                                                                         ",
+   " escape interrupt · ctrl+c/ctrl+d clear/exit · / commands · ! bash · ctrl+o more                    ",
+   " Press ctrl+o to show full startup help and loaded resources.                                       ",
+   "                                                                                                    ",
+   " Pi can explain its own features and look up its docs. Ask it how to use or extend Pi.              ",
+   "",
+   "[Extensions]                                                                                        ",
+   "  faux.ts, recorder.ts                                                                              ",
+   "",
+   "",
+   " Warning: fd not found. Offline mode enabled, skipping download.                                    ",
+   "",
+   "                                                                                                    ",
+   " before dialog                                                                                      ",
+   "                                                                                                    ",
+   "",
+   " Reply to a 13-character prompt.                                                                    ",
+   "",
+   "────────────────────────────────────────────────────────────────────────────────────────────────────",
+   "                                                                                                    ",
+   "────────────────────────────────────────────────────────────────────────────────────────────────────",
+   "/sandbox/project (master)",
+   "↑1.5k ↓8 W1.5k CH0.0% 2.4%/128k (auto)                                                        faux-1",
+   "",
+   "To resume this session: pi --session bc467de4-9008-4e67-890f-c5928190171f"
+  ]
+ },
+ "files": {
+  "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl": [
+   {
+    "type": "session",
+    "version": 3,
+    "id": "bc467de4-9008-4e67-890f-c5928190171f",
+    "timestamp": "2026-09-23T00:03:18.635Z",
+    "cwd": "/sandbox/project"
+   },
+   {
+    "type": "model_change",
+    "id": "98fcfb28",
+    "parentId": null,
+    "timestamp": "2026-09-23T00:03:18.662Z",
+    "provider": "faux",
+    "modelId": "faux-1"
+   },
+   {
+    "type": "thinking_level_change",
+    "id": "fb7255e4",
+    "parentId": "98fcfb28",
+    "timestamp": "2026-09-23T00:03:18.662Z",
+    "thinkingLevel": "off"
+   },
+   {
+    "type": "message",
+    "id": "c1a550dd",
+    "parentId": "fb7255e4",
+    "timestamp": "2026-09-23T00:03:19.452Z",
+    "message": {
+     "role": "system",
+     "content": "<text:0>",
+     "sections": {
+      "preamble": "<text:169>",
+      "tools": "<text:339>",
+      "rules": "<text:839>",
+      "docs": "<text:1592>",
+      "cwd": "<text:102>"
+     },
+     "timestamp": 1790121799451,
+     "toolsAdded": [
+      {
+       "name": "read",
+       "description": "Read the contents of a file. Supports text files and images (jpg, png, gif, webp, bmp). Images are sent as attachments. For text files, output is truncated to 2000 lines or 50KB (whichever is hit first). Use offset/limit for large files. When you need the full file, continue with offset until complete.",
+       "parameters": {
+        "type": "object",
+        "required": [
+         "path"
+        ],
+        "properties": {
+         "path": {
+          "type": "string",
+          "description": "Path to the file to read (relative or absolute)"
+         },
+         "offset": {
+          "type": "number",
+          "description": "Line number to start reading from (1-indexed)"
+         },
+         "limit": {
+          "type": "number",
+          "description": "Maximum number of lines to read"
+         }
+        }
+       },
+       "constrainedSampling": {
+        "type": "json_schema",
+        "strict": "prefer"
+       }
+      },
+      {
+       "name": "bash",
+       "description": "Execute a bash command in the current working directory. Returns stdout and stderr. Output is truncated to last 2000 lines or 50KB (whichever is hit first). If truncated, full output is saved to a temp file. Optionally provide a timeout in seconds.",
+       "parameters": {
+        "type": "object",
+        "required": [
+         "command"
+        ],
+        "properties": {
+         "command": {
+          "type": "string",
+          "description": "Shell command to execute"
+         },
+         "timeout": {
+          "type": "number",
+          "description": "Timeout in seconds (optional, no default timeout)"
+         }
+        }
+       },
+       "constrainedSampling": {
+        "type": "json_schema",
+        "strict": "prefer"
+       }
+      },
+      {
+       "name": "edit",
+       "description": "Edit a single file using exact text replacement. Every edits[].oldText must match a unique, non-overlapping region of the original file. If two changes affect the same block or nearby lines, merge them into one edit instead of emitting overlapping edits. Do not include large unchanged regions just to connect distant changes.",
+       "parameters": {
+        "type": "object",
+        "required": [
+         "path",
+         "edits"
+        ],
+        "properties": {
+         "path": {
+          "type": "string",
+          "description": "Path to the file to edit (relative or absolute)"
+         },
+         "edits": {
+          "type": "array",
+          "items": {
+           "type": "object",
+           "required": [
+            "oldText",
+            "newText"
+           ],
+           "properties": {
+            "oldText": {
+             "type": "string",
+             "description": "Exact text for one targeted replacement. It must be unique in the original file and must not overlap with any other edits[].oldText in the same call."
+            },
+            "newText": {
+             "type": "string",
+             "description": "Replacement text for this targeted edit."
+            }
+           }
+          },
+          "description": "One or more targeted replacements. Each edit is matched against the original file, not incrementally. Do not include overlapping or nested edits. If two changes touch the same block or nearby lines, merge them into one edit instead."
+         }
+        }
+       },
+       "constrainedSampling": {
+        "type": "json_schema",
+        "strict": "prefer"
+       }
+      },
+      {
+       "name": "write",
+       "description": "Write content to a file. Creates the file if it doesn't exist, overwrites if it does. Automatically creates parent directories.",
+       "parameters": {
+        "type": "object",
+        "required": [
+         "path",
+         "content"
+        ],
+        "properties": {
+         "path": {
+          "type": "string",
+          "description": "Path to the file to write (relative or absolute)"
+         },
+         "content": {
+          "type": "string",
+          "description": "Content to write to the file"
+         }
+        }
+       },
+       "constrainedSampling": {
+        "type": "json_schema",
+        "strict": "prefer"
+       }
+      }
+     ]
+    }
+   },
+   {
+    "type": "message",
+    "id": "1a23f657",
+    "parentId": "c1a550dd",
+    "timestamp": "2026-09-23T00:03:19.453Z",
+    "message": {
+     "role": "user",
+     "content": [
+      {
+       "type": "text",
+       "text": "before dialog"
+      }
+     ],
+     "timestamp": 1790121799451
+    }
+   },
+   {
+    "type": "message",
+    "id": "a8d1f4be",
+    "parentId": "1a23f657",
+    "timestamp": "2026-09-23T00:03:19.476Z",
+    "message": {
+     "role": "assistant",
+     "content": [
+      {
+       "type": "text",
+       "text": "Reply to a 13-character prompt."
+      }
+     ],
+     "api": "faux:1790121798653:fn3emf8k6i9",
+     "provider": "faux",
+     "model": "faux-1",
+     "usage": {
+      "input": 1517,
+      "output": 8,
+      "cacheRead": 0,
+      "cacheWrite": 1517,
+      "totalTokens": 3042,
+      "cost": {
+       "input": 0,
+       "output": 0,
+       "cacheRead": 0,
+       "cacheWrite": 0,
+       "total": 0
+      }
+     },
+     "stopReason": "stop",
+     "timestamp": 1790121799454
+    }
+   }
+  ]
+ },
+ "fileRowBytes": {
+  "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-18-635Z_bc467de4-9008-4e67-890f-c5928190171f.jsonl": [
+   212,
+   132,
+   132,
+   6284,
+   199,
+   470
+  ]
+ }
+}

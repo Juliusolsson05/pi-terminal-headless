@@ -2,11 +2,6 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
-    // WHY passWithNoTests only while the package is being bootstrapped: the
-    // contract requires the tiers and CI to exist before any module does.
-    // Stage 0 adds the first real test; remove this line in that commit so an
-    // empty suite can never pass silently again.
-    passWithNoTests: true,
     projects: [
       {
         test: {

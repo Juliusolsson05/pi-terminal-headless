@@ -1,0 +1,211 @@
+{
+ "meta": {
+  "recordedWith": "0.87.1",
+  "scenario": "trust",
+  "recordedAt": "2026-09-23",
+  "node": "v24.14.1",
+  "platform": "darwin-arm64",
+  "terminal": "@xterm/headless",
+  "cols": 100,
+  "rows": 30
+ },
+ "sessionIdLaunched": "c3538ec5-ef1a-43b2-b88a-3c0b7e9ab143",
+ "notes": [],
+ "steps": [
+  {
+   "t": 11,
+   "action": "spawn",
+   "detail": {
+    "process": 1,
+    "args": [
+     "--provider",
+     "faux",
+     "--model",
+     "faux-1",
+     "-e",
+     "<scripts>/probe/faux.ts",
+     "-e",
+     "<scripts>/probe/recorder.ts",
+     "--session-id",
+     "c3538ec5-ef1a-43b2-b88a-3c0b7e9ab143"
+    ]
+   }
+  },
+  {
+   "t": 189,
+   "action": "waited",
+   "detail": {
+    "label": "trust prompt or start"
+   }
+  },
+  {
+   "t": 1098,
+   "action": "screen",
+   "detail": {
+    "lines": [
+     " /sandbox/project           ",
+     "                                                                                                    ",
+     " This allows pi to load .pi settings and resources, install missing project packages, and execute   ",
+     " project extensions.                                                                                ",
+     "",
+     " → Trust                                                                                            ",
+     "   Trust parent folder                                                                              ",
+     " (/sandbox)                 ",
+     "   Trust (this session only)                                                                        ",
+     "   Do not trust                                                                                     ",
+     "   Do not trust (this session only)                                                                 ",
+     "",
+     " ↑↓ navigate  enter select  escape/ctrl+c cancel                                                    ",
+     "",
+     "────────────────────────────────────────────────────────────────────────────────────────────────────"
+    ]
+   }
+  },
+  {
+   "t": 1098,
+   "action": "key",
+   "detail": {
+    "name": "esc"
+   }
+  },
+  {
+   "t": 1275,
+   "action": "waited",
+   "detail": {
+    "label": "session_start after trust"
+   }
+  },
+  {
+   "t": 1830,
+   "action": "screen",
+   "detail": {
+    "lines": [
+     "",
+     "[Extensions]                                                                                        ",
+     "  faux.ts, recorder.ts                                                                              ",
+     "",
+     "",
+     " Warning: fd not found. Offline mode enabled, skipping download.                                    ",
+     "",
+     " This project is not trusted. Project .pi resources and packages are ignored. Use /trust to save a  ",
+     " trust decision, then restart pi.                                                                   ",
+     "",
+     "────────────────────────────────────────────────────────────────────────────────────────────────────",
+     "                                                                                                    ",
+     "────────────────────────────────────────────────────────────────────────────────────────────────────",
+     "/sandbox/project (master)",
+     "0.0%/128k (auto)                                                                              faux-1"
+    ]
+   }
+  },
+  {
+   "t": 1830,
+   "action": "key",
+   "detail": {
+    "name": "ctrl-d"
+   }
+  },
+  {
+   "t": 1906,
+   "action": "waited",
+   "detail": {
+    "label": "exit after ctrl-d"
+   }
+  }
+ ],
+ "events": [
+  {
+   "t": 179,
+   "name": "project_trust",
+   "cwd": "/sandbox/project"
+  },
+  {
+   "t": 1271,
+   "name": "session_start",
+   "idle": true,
+   "pending": false,
+   "sessionId": "c3538ec5-ef1a-43b2-b88a-3c0b7e9ab143",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-21-008Z_c3538ec5-ef1a-43b2-b88a-3c0b7e9ab143.jsonl",
+   "leafId": "343262e2",
+   "fileBytes": -1,
+   "keys": [
+    "reason",
+    "type"
+   ],
+   "reason": "startup"
+  },
+  {
+   "t": 1271,
+   "name": "resources_discover",
+   "idle": true,
+   "pending": false,
+   "sessionId": "c3538ec5-ef1a-43b2-b88a-3c0b7e9ab143",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-21-008Z_c3538ec5-ef1a-43b2-b88a-3c0b7e9ab143.jsonl",
+   "leafId": "343262e2",
+   "fileBytes": -1,
+   "keys": [
+    "cwd",
+    "reason",
+    "type"
+   ],
+   "cwd": "/sandbox/project",
+   "reason": "startup"
+  },
+  {
+   "t": 1883,
+   "name": "session_shutdown",
+   "idle": true,
+   "pending": false,
+   "sessionId": "c3538ec5-ef1a-43b2-b88a-3c0b7e9ab143",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-21-008Z_c3538ec5-ef1a-43b2-b88a-3c0b7e9ab143.jsonl",
+   "leafId": "343262e2",
+   "fileBytes": -1,
+   "keys": [
+    "reason",
+    "type"
+   ],
+   "reason": "quit"
+  }
+ ],
+ "growth": [],
+ "exits": [
+  {
+   "t": 1891,
+   "process": 1,
+   "exitCode": 0,
+   "signal": 0
+  }
+ ],
+ "pty": {
+  "chunks": 35,
+  "bytes": 5933,
+  "da1HandAnswered": 0,
+  "screen": [
+   "Warning: No project session found with id 'c3538ec5-ef1a-43b2-b88a-3c0b7e9ab143'; creating a new ses",
+   "sion with that id.",
+   "",
+   " pi v0.87.1                                                                                         ",
+   " escape interrupt · ctrl+c/ctrl+d clear/exit · / commands · ! bash · ctrl+o more                    ",
+   " Press ctrl+o to show full startup help and loaded resources.                                       ",
+   "                                                                                                    ",
+   " Pi can explain its own features and look up its docs. Ask it how to use or extend Pi.              ",
+   "",
+   "[Extensions]                                                                                        ",
+   "  faux.ts, recorder.ts                                                                              ",
+   "",
+   "",
+   " Warning: fd not found. Offline mode enabled, skipping download.                                    ",
+   "",
+   " This project is not trusted. Project .pi resources and packages are ignored. Use /trust to save a  ",
+   " trust decision, then restart pi.                                                                   ",
+   "",
+   "────────────────────────────────────────────────────────────────────────────────────────────────────",
+   "                                                                                                    ",
+   "────────────────────────────────────────────────────────────────────────────────────────────────────",
+   "/sandbox/project (master)",
+   "0.0%/128k (auto)                                                                              faux-1"
+  ]
+ },
+ "files": {},
+ "fileRowBytes": {}
+}

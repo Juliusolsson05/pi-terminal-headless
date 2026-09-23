@@ -1,0 +1,985 @@
+{
+ "meta": {
+  "recordedWith": "0.87.1",
+  "scenario": "kill",
+  "recordedAt": "2026-09-23",
+  "node": "v24.14.1",
+  "platform": "darwin-arm64",
+  "terminal": "@xterm/headless",
+  "cols": 100,
+  "rows": 30
+ },
+ "sessionIdLaunched": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+ "notes": [],
+ "steps": [
+  {
+   "t": 13,
+   "action": "spawn",
+   "detail": {
+    "process": 1,
+    "args": [
+     "--provider",
+     "faux",
+     "--model",
+     "faux-1",
+     "-e",
+     "<scripts>/probe/faux.ts",
+     "-e",
+     "<scripts>/probe/recorder.ts",
+     "--session-id",
+     "bbd501d6-915c-4783-8858-dc3c8433fc16"
+    ]
+   }
+  },
+  {
+   "t": 319,
+   "action": "waited",
+   "detail": {
+    "label": "session_start #1"
+   }
+  },
+  {
+   "t": 977,
+   "action": "type",
+   "detail": {
+    "text": "first"
+   }
+  },
+  {
+   "t": 977,
+   "action": "key",
+   "detail": {
+    "name": "enter"
+   }
+  },
+  {
+   "t": 1028,
+   "action": "waited",
+   "detail": {
+    "label": "agent_settled #1"
+   }
+  },
+  {
+   "t": 1332,
+   "action": "type",
+   "detail": {
+    "text": "long [slow]"
+   }
+  },
+  {
+   "t": 1332,
+   "action": "key",
+   "detail": {
+    "name": "enter"
+   }
+  },
+  {
+   "t": 1358,
+   "action": "waited",
+   "detail": {
+    "label": "streaming"
+   }
+  },
+  {
+   "t": 1358,
+   "action": "kill",
+   "detail": {
+    "signal": "SIGKILL"
+   }
+  },
+  {
+   "t": 1383,
+   "action": "waited",
+   "detail": {
+    "label": "exit"
+   }
+  }
+ ],
+ "events": [
+  {
+   "t": 310,
+   "name": "session_start",
+   "idle": true,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "92371302",
+   "fileBytes": -1,
+   "keys": [
+    "reason",
+    "type"
+   ],
+   "reason": "startup"
+  },
+  {
+   "t": 310,
+   "name": "resources_discover",
+   "idle": true,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "92371302",
+   "fileBytes": -1,
+   "keys": [
+    "cwd",
+    "reason",
+    "type"
+   ],
+   "cwd": "/sandbox/project",
+   "reason": "startup"
+  },
+  {
+   "t": 981,
+   "name": "input",
+   "idle": true,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "92371302",
+   "fileBytes": -1,
+   "keys": [
+    "images",
+    "source",
+    "streamingBehavior",
+    "text",
+    "type"
+   ],
+   "source": "interactive",
+   "textLength": 5,
+   "probeTag": null
+  },
+  {
+   "t": 982,
+   "name": "before_agent_start",
+   "idle": true,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "92371302",
+   "fileBytes": -1,
+   "keys": [
+    "images",
+    "prompt",
+    "systemPrompt",
+    "systemPromptOptions",
+    "type"
+   ],
+   "prompt": "first"
+  },
+  {
+   "t": 982,
+   "name": "agent_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "92371302",
+   "fileBytes": -1,
+   "keys": [
+    "type"
+   ]
+  },
+  {
+   "t": 983,
+   "name": "turn_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "92371302",
+   "fileBytes": -1,
+   "keys": [
+    "timestamp",
+    "turnIndex",
+    "type"
+   ],
+   "turnIndex": 0,
+   "timestamp": 1790121808356
+  },
+  {
+   "t": 983,
+   "name": "message_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "92371302",
+   "fileBytes": -1,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "system",
+    "contentTypes": "string",
+    "timestamp": 1790121808355
+   }
+  },
+  {
+   "t": 983,
+   "name": "message_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "92371302",
+   "fileBytes": -1,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "system",
+    "contentTypes": "string",
+    "timestamp": 1790121808355
+   }
+  },
+  {
+   "t": 983,
+   "name": "message_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "49e094f6",
+   "fileBytes": -1,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "user",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121808355
+   }
+  },
+  {
+   "t": 983,
+   "name": "message_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "49e094f6",
+   "fileBytes": -1,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "user",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121808355
+   }
+  },
+  {
+   "t": 985,
+   "name": "message_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "8968f51e",
+   "fileBytes": -1,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "assistant",
+    "stopReason": "pending",
+    "contentTypes": [],
+    "toolCallIds": [],
+    "timestamp": 1790121808358
+   }
+  },
+  {
+   "t": 985,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "8968f51e",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_start"
+  },
+  {
+   "t": 996,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "8968f51e",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_delta"
+  },
+  {
+   "t": 1005,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "8968f51e",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_delta"
+  },
+  {
+   "t": 1007,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "8968f51e",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_delta"
+  },
+  {
+   "t": 1007,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "8968f51e",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_end"
+  },
+  {
+   "t": 1007,
+   "name": "message_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "8968f51e",
+   "fileBytes": -1,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "assistant",
+    "stopReason": "stop",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121808358
+   }
+  },
+  {
+   "t": 1008,
+   "name": "turn_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "54ecf731",
+   "fileBytes": 7415,
+   "keys": [
+    "context",
+    "continue",
+    "entries",
+    "message",
+    "messageEntryId",
+    "outcome",
+    "toolResultEntryIds",
+    "toolResults",
+    "turnIndex",
+    "type"
+   ],
+   "turnIndex": 0,
+   "messageEntryId": "54ecf731",
+   "toolResultEntryIds": [],
+   "message": {
+    "role": "assistant",
+    "stopReason": "stop",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121808358
+   }
+  },
+  {
+   "t": 1008,
+   "name": "agent_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "54ecf731",
+   "fileBytes": 7415,
+   "keys": [
+    "messages",
+    "type"
+   ],
+   "messageCount": 3
+  },
+  {
+   "t": 1009,
+   "name": "agent_before_settle",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "54ecf731",
+   "fileBytes": 7415,
+   "keys": [
+    "context",
+    "continue",
+    "entries",
+    "outcome",
+    "type"
+   ],
+   "outcome": "completed",
+   "continue": false
+  },
+  {
+   "t": 1009,
+   "name": "agent_settled",
+   "idle": true,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "54ecf731",
+   "fileBytes": 7415,
+   "keys": [
+    "type"
+   ]
+  },
+  {
+   "t": 1334,
+   "name": "input",
+   "idle": true,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "54ecf731",
+   "fileBytes": 7415,
+   "keys": [
+    "images",
+    "source",
+    "streamingBehavior",
+    "text",
+    "type"
+   ],
+   "source": "interactive",
+   "textLength": 11,
+   "probeTag": null
+  },
+  {
+   "t": 1335,
+   "name": "before_agent_start",
+   "idle": true,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "54ecf731",
+   "fileBytes": 7415,
+   "keys": [
+    "images",
+    "prompt",
+    "systemPrompt",
+    "systemPromptOptions",
+    "type"
+   ],
+   "prompt": "long [slow]"
+  },
+  {
+   "t": 1335,
+   "name": "agent_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "54ecf731",
+   "fileBytes": 7415,
+   "keys": [
+    "type"
+   ]
+  },
+  {
+   "t": 1335,
+   "name": "turn_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "54ecf731",
+   "fileBytes": 7415,
+   "keys": [
+    "timestamp",
+    "turnIndex",
+    "type"
+   ],
+   "turnIndex": 0,
+   "timestamp": 1790121808708
+  },
+  {
+   "t": 1335,
+   "name": "message_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "54ecf731",
+   "fileBytes": 7415,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "user",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121808708
+   }
+  },
+  {
+   "t": 1335,
+   "name": "message_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "54ecf731",
+   "fileBytes": 7415,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "user",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121808708
+   }
+  },
+  {
+   "t": 1336,
+   "name": "message_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "b71997bf",
+   "fileBytes": 7612,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "assistant",
+    "stopReason": "pending",
+    "contentTypes": [],
+    "toolCallIds": [],
+    "timestamp": 1790121808708
+   }
+  },
+  {
+   "t": 1336,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "b71997bf",
+   "fileBytes": 7612,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "thinking_start"
+  },
+  {
+   "t": 1347,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "b71997bf",
+   "fileBytes": 7612,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "thinking_delta"
+  },
+  {
+   "t": 1347,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "b71997bf",
+   "fileBytes": 7612,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "thinking_end"
+  },
+  {
+   "t": 1347,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "leafId": "b71997bf",
+   "fileBytes": 7612,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_start"
+  }
+ ],
+ "growth": [
+  {
+   "t": 1013,
+   "file": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "bytes": 7415
+  },
+  {
+   "t": 1339,
+   "file": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl",
+   "bytes": 7612
+  }
+ ],
+ "exits": [
+  {
+   "t": 1361,
+   "process": 1,
+   "exitCode": 0,
+   "signal": 9
+  }
+ ],
+ "pty": {
+  "chunks": 33,
+  "bytes": 7554,
+  "da1HandAnswered": 0,
+  "screen": [
+   "Warning: No project session found with id 'bbd501d6-915c-4783-8858-dc3c8433fc16'; creating a new ses",
+   "sion with that id.",
+   "",
+   " pi v0.87.1                                                                                         ",
+   " escape interrupt · ctrl+c/ctrl+d clear/exit · / commands · ! bash · ctrl+o more                    ",
+   " Press ctrl+o to show full startup help and loaded resources.                                       ",
+   "                                                                                                    ",
+   " Pi can explain its own features and look up its docs. Ask it how to use or extend Pi.              ",
+   "",
+   "[Extensions]                                                                                        ",
+   "  faux.ts, recorder.ts                                                                              ",
+   "",
+   "",
+   " Warning: fd not found. Offline mode enabled, skipping download.                                    ",
+   "",
+   "                                                                                                    ",
+   " first                                                                                              ",
+   "                                                                                                    ",
+   "",
+   " Reply to a 5-character prompt.                                                                     ",
+   "",
+   "                                                                                                    ",
+   " long [slow]                                                                                        ",
+   "                                                                                                    ",
+   "",
+   " Thinking slowly.                                                                                   ",
+   "",
+   "── ⠋ Working ───────────────────────────────────────────────────────────────────────────────────────",
+   "                                                                                                    ",
+   "────────────────────────────────────────────────────────────────────────────────────────────────────",
+   "/sandbox/project (master)",
+   "↑1.5k ↓8 W1.5k CH0.0% 2.4%/128k (auto)                                                        faux-1"
+  ]
+ },
+ "files": {
+  "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl": [
+   {
+    "type": "session",
+    "version": 3,
+    "id": "bbd501d6-915c-4783-8858-dc3c8433fc16",
+    "timestamp": "2026-09-23T00:03:27.539Z",
+    "cwd": "/sandbox/project"
+   },
+   {
+    "type": "model_change",
+    "id": "eaccee67",
+    "parentId": null,
+    "timestamp": "2026-09-23T00:03:27.563Z",
+    "provider": "faux",
+    "modelId": "faux-1"
+   },
+   {
+    "type": "thinking_level_change",
+    "id": "92371302",
+    "parentId": "eaccee67",
+    "timestamp": "2026-09-23T00:03:27.563Z",
+    "thinkingLevel": "off"
+   },
+   {
+    "type": "message",
+    "id": "49e094f6",
+    "parentId": "92371302",
+    "timestamp": "2026-09-23T00:03:28.356Z",
+    "message": {
+     "role": "system",
+     "content": "<text:0>",
+     "sections": {
+      "preamble": "<text:169>",
+      "tools": "<text:339>",
+      "rules": "<text:839>",
+      "docs": "<text:1592>",
+      "cwd": "<text:100>"
+     },
+     "timestamp": 1790121808355,
+     "toolsAdded": [
+      {
+       "name": "read",
+       "description": "Read the contents of a file. Supports text files and images (jpg, png, gif, webp, bmp). Images are sent as attachments. For text files, output is truncated to 2000 lines or 50KB (whichever is hit first). Use offset/limit for large files. When you need the full file, continue with offset until complete.",
+       "parameters": {
+        "type": "object",
+        "required": [
+         "path"
+        ],
+        "properties": {
+         "path": {
+          "type": "string",
+          "description": "Path to the file to read (relative or absolute)"
+         },
+         "offset": {
+          "type": "number",
+          "description": "Line number to start reading from (1-indexed)"
+         },
+         "limit": {
+          "type": "number",
+          "description": "Maximum number of lines to read"
+         }
+        }
+       },
+       "constrainedSampling": {
+        "type": "json_schema",
+        "strict": "prefer"
+       }
+      },
+      {
+       "name": "bash",
+       "description": "Execute a bash command in the current working directory. Returns stdout and stderr. Output is truncated to last 2000 lines or 50KB (whichever is hit first). If truncated, full output is saved to a temp file. Optionally provide a timeout in seconds.",
+       "parameters": {
+        "type": "object",
+        "required": [
+         "command"
+        ],
+        "properties": {
+         "command": {
+          "type": "string",
+          "description": "Shell command to execute"
+         },
+         "timeout": {
+          "type": "number",
+          "description": "Timeout in seconds (optional, no default timeout)"
+         }
+        }
+       },
+       "constrainedSampling": {
+        "type": "json_schema",
+        "strict": "prefer"
+       }
+      },
+      {
+       "name": "edit",
+       "description": "Edit a single file using exact text replacement. Every edits[].oldText must match a unique, non-overlapping region of the original file. If two changes affect the same block or nearby lines, merge them into one edit instead of emitting overlapping edits. Do not include large unchanged regions just to connect distant changes.",
+       "parameters": {
+        "type": "object",
+        "required": [
+         "path",
+         "edits"
+        ],
+        "properties": {
+         "path": {
+          "type": "string",
+          "description": "Path to the file to edit (relative or absolute)"
+         },
+         "edits": {
+          "type": "array",
+          "items": {
+           "type": "object",
+           "required": [
+            "oldText",
+            "newText"
+           ],
+           "properties": {
+            "oldText": {
+             "type": "string",
+             "description": "Exact text for one targeted replacement. It must be unique in the original file and must not overlap with any other edits[].oldText in the same call."
+            },
+            "newText": {
+             "type": "string",
+             "description": "Replacement text for this targeted edit."
+            }
+           }
+          },
+          "description": "One or more targeted replacements. Each edit is matched against the original file, not incrementally. Do not include overlapping or nested edits. If two changes touch the same block or nearby lines, merge them into one edit instead."
+         }
+        }
+       },
+       "constrainedSampling": {
+        "type": "json_schema",
+        "strict": "prefer"
+       }
+      },
+      {
+       "name": "write",
+       "description": "Write content to a file. Creates the file if it doesn't exist, overwrites if it does. Automatically creates parent directories.",
+       "parameters": {
+        "type": "object",
+        "required": [
+         "path",
+         "content"
+        ],
+        "properties": {
+         "path": {
+          "type": "string",
+          "description": "Path to the file to write (relative or absolute)"
+         },
+         "content": {
+          "type": "string",
+          "description": "Content to write to the file"
+         }
+        }
+       },
+       "constrainedSampling": {
+        "type": "json_schema",
+        "strict": "prefer"
+       }
+      }
+     ]
+    }
+   },
+   {
+    "type": "message",
+    "id": "8968f51e",
+    "parentId": "49e094f6",
+    "timestamp": "2026-09-23T00:03:28.356Z",
+    "message": {
+     "role": "user",
+     "content": [
+      {
+       "type": "text",
+       "text": "first"
+      }
+     ],
+     "timestamp": 1790121808355
+    }
+   },
+   {
+    "type": "message",
+    "id": "54ecf731",
+    "parentId": "8968f51e",
+    "timestamp": "2026-09-23T00:03:28.380Z",
+    "message": {
+     "role": "assistant",
+     "content": [
+      {
+       "type": "text",
+       "text": "Reply to a 5-character prompt."
+      }
+     ],
+     "api": "faux:1790121807554:phmza1axo3",
+     "provider": "faux",
+     "model": "faux-1",
+     "usage": {
+      "input": 1515,
+      "output": 8,
+      "cacheRead": 0,
+      "cacheWrite": 1515,
+      "totalTokens": 3038,
+      "cost": {
+       "input": 0,
+       "output": 0,
+       "cacheRead": 0,
+       "cacheWrite": 0,
+       "total": 0
+      }
+     },
+     "stopReason": "stop",
+     "timestamp": 1790121808358
+    }
+   },
+   {
+    "type": "message",
+    "id": "b71997bf",
+    "parentId": "54ecf731",
+    "timestamp": "2026-09-23T00:03:28.708Z",
+    "message": {
+     "role": "user",
+     "content": [
+      {
+       "type": "text",
+       "text": "long [slow]"
+      }
+     ],
+     "timestamp": 1790121808708
+    }
+   }
+  ]
+ },
+ "fileRowBytes": {
+  "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-03-27-539Z_bbd501d6-915c-4783-8858-dc3c8433fc16.jsonl": [
+   210,
+   132,
+   132,
+   6282,
+   191,
+   468,
+   197
+  ]
+ }
+}

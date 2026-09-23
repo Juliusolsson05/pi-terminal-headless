@@ -26,3 +26,8 @@ Tracking issue: Juliusolsson05/agent-code#1132.
 
 - 2026-09-22 — repository created public (approved), scaffold copied from
   opencode-terminal-headless at 75536312.
+- 2026-09-22 — Stage 0 recorded: 18 scenarios on Pi 0.87.1 (faux model, no
+  login on this machine). H3/H5/H6 refined — doorbell is `turn_end`/
+  `agent_settled` (never `message_end`), the bridge always sends
+  `deliverAs: 'followUp'` (a busy prompt without it is silently lost), the live
+  leaf comes from `session_tree`. See research/census-2026-09-22.md.
