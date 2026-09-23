@@ -44,7 +44,7 @@ describe('readPiHistory', () => {
     const rows = Object.values(loadLiveFixture('tree').files)[0]!
     const branch = new Set(referenceActiveBranch(rows).map(row => row.id))
     const abandoned = rows.find(row => row.type === 'message' && !branch.has(row.id as string))!
-    expect(await readPiHistory(file!, { limit: 10, beforeEntryId: abandoned.id as string })).toEqual({ rows: [], hasOlder: false })
+    expect(await readPiHistory(file!, { limit: 10, beforeEntryId: abandoned.id as string })).toEqual({ rows: [], hasOlder: false, total: branch.size })
   })
 
   it('distinguishes "cannot read" from "empty": a missing file and a non-session file throw typed errors', async () => {

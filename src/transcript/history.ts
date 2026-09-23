@@ -24,6 +24,8 @@ export type PiHistoryPage = {
   rows: PiSessionRow[]
   /** True when rows older than the first returned row exist on the branch. */
   hasOlder: boolean
+  /** Rows on the whole active branch (the host shows it as the conversation length). */
+  total: number
 }
 
 export class PiHistoryError extends Error {
@@ -64,11 +66,11 @@ export async function readPiHistory(file: string, options: { limit: number; befo
     // An id no longer on the branch (the user moved in the tree since the
     // caller's last page) cannot anchor a page; there is nothing older to
     // give that would be consistent with what the caller holds.
-    if (index === -1) return { rows: [], hasOlder: false }
+    if (index === -1) return { rows: [], hasOlder: false, total: branch.length }
     end = index
   }
   const start = Math.max(0, end - Math.max(0, options.limit))
-  return { rows: branch.slice(start, end), hasOlder: start > 0 }
+  return { rows: branch.slice(start, end), hasOlder: start > 0, total: branch.length }
 }
 
 /** The whole active branch, oldest first (MCP transcript reads, provider switch). */
