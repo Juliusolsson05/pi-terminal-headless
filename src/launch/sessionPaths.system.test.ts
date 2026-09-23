@@ -5,7 +5,7 @@ import { join } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
 
 import { loadLiveFixture } from '../testing/fixtures.js'
-import { encodeCwdForSessionDir, resolvePiAgentDir, resolvePiSessionDir, resolvePiSessionFile, sessionIdFromFileName } from './sessionPaths.js'
+import { encodeCwdForSessionDir, listAllPiSessionFiles, resolvePiAgentDir, resolvePiSessionDir, resolvePiSessionFile, resolvePiSessionsRoot, sessionIdFromFileName } from './sessionPaths.js'
 
 const dirs: string[] = []
 afterEach(() => {
@@ -54,5 +54,23 @@ describe('session directory resolution (mirrors the pinned Pi release)', () => {
     expect(await resolvePiSessionFile({ env: {}, homeDirectory: h, cwd: '/w/p', sessionId: '709ab74b-2d9d-434a-9298-d7dc22c53d42' })).toBe(join(dir, name))
     expect(await resolvePiSessionFile({ env: {}, homeDirectory: h, cwd: '/w/p', sessionId: 'other' })).toBeNull()
     expect(await resolvePiSessionFile({ env: {}, homeDirectory: h, cwd: '/nowhere', sessionId: 'x' })).toBeNull()
+  })
+
+  it('lists every session across per-cwd directories by default, or a flat custom dir', async () => {
+    const h = home()
+    const perCwd = join(h, '.pi', 'agent', 'sessions')
+    mkdirSync(join(perCwd, '--a--'), { recursive: true })
+    mkdirSync(join(perCwd, '--b--'), { recursive: true })
+    writeFileSync(join(perCwd, '--a--', '2026-01-01T00-00-00-000Z_one.jsonl'), '')
+    writeFileSync(join(perCwd, '--b--', '2026-01-02T00-00-00-000Z_two.jsonl'), '')
+    writeFileSync(join(perCwd, '--b--', 'notes.txt'), '')
+    expect(await resolvePiSessionsRoot({ env: {}, homeDirectory: h })).toEqual({ root: perCwd, layout: 'per-cwd' })
+    expect((await listAllPiSessionFiles({ env: {}, homeDirectory: h })).map(f => f.split('/').at(-1))).toEqual([
+      '2026-01-01T00-00-00-000Z_one.jsonl', '2026-01-02T00-00-00-000Z_two.jsonl',
+    ])
+    const flat = join(h, 'flat')
+    mkdirSync(flat)
+    writeFileSync(join(flat, '2026-01-03T00-00-00-000Z_three.jsonl'), '')
+    expect(await listAllPiSessionFiles({ env: { PI_CODING_AGENT_SESSION_DIR: flat }, homeDirectory: h })).toEqual([join(flat, '2026-01-03T00-00-00-000Z_three.jsonl')])
   })
 })

@@ -71,6 +71,43 @@ export async function resolvePiSessionDir(options: PiPathEnvironment & { cwd: st
   return join(agentDir, 'sessions', encodeCwdForSessionDir(options.cwd))
 }
 
+/**
+ * Where ALL of this user's Pi sessions live, for listing every project at once
+ * (Agent Code's conversation catalog). The default keeps one directory per cwd
+ * under `<agentDir>/sessions`; a custom session dir (env or setting) is flat.
+ *
+ * WHY the layout is reported rather than hidden: the per-cwd directory name is
+ * a LOSSY encoding of the cwd (`/` and `-` both become `-`), so a lister must
+ * read each file's header for the real cwd; knowing the layout tells it where
+ * the files are, not which project they belong to.
+ */
+export async function resolvePiSessionsRoot(options: PiPathEnvironment): Promise<{ root: string; layout: 'per-cwd' | 'flat' }> {
+  const home = options.homeDirectory ?? homedir()
+  const fromEnv = options.env.PI_CODING_AGENT_SESSION_DIR
+  if (fromEnv) return { root: resolve(expandTilde(fromEnv, home)), layout: 'flat' }
+  const agentDir = resolvePiAgentDir(options)
+  const fromSetting = await readSessionDirSetting(agentDir, home)
+  if (fromSetting) return { root: fromSetting, layout: 'flat' }
+  return { root: join(agentDir, 'sessions'), layout: 'per-cwd' }
+}
+
+/** Every Pi session file under the sessions root, whichever layout it uses. */
+export async function listAllPiSessionFiles(options: PiPathEnvironment): Promise<string[]> {
+  const { root, layout } = await resolvePiSessionsRoot(options)
+  const directories = layout === 'flat' ? [root] : await readdir(root).then(names => names.map(name => join(root, name)), () => [])
+  const files: string[] = []
+  for (const directory of directories) {
+    let names: string[]
+    try {
+      names = await readdir(directory)
+    } catch {
+      continue // a stray file in the root, or a directory removed meanwhile
+    }
+    for (const name of names) if (sessionIdFromFileName(name) !== undefined) files.push(join(directory, name))
+  }
+  return files.sort()
+}
+
 /** `<ts>_<id>.jsonl` → id, or undefined for any other name. */
 export function sessionIdFromFileName(name: string): string | undefined {
   const match = /^[^_]+_(.+)\.jsonl$/.exec(name)
