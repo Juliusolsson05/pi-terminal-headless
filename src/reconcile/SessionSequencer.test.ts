@@ -40,4 +40,46 @@ describe('SessionSequencer /tree leaf', () => {
     expect(log.filter(line => line.startsWith('entry:'))).toEqual(['entry:c'])
     sequencer.dispose()
   })
+
+  // Astra review, finding 8: the reader polls, so a row Pi wrote BEFORE a
+  // /tree move can be read after it. It must not cancel the move.
+  it('a row written before the move but read after it keeps the /tree branch', () => {
+    const { sink, log } = recordingSink()
+    const sequencer = new SessionSequencer(sink, { sessionId: 's', file: '/f.jsonl', attachExisting: false })
+    sequencer.onDurableRows([row('a', null, 1), row('b', 'a', 2), row('c', 'b', 3)], '/f.jsonl')
+    // Idle /name wrote `d` under `c`, then /tree moved to `a` before the poll.
+    sequencer.onLive([{ kind: 'leaf', leafId: 'a', oldLeafId: 'd' }])
+    log.length = 0
+    sequencer.onDurableRows([row('d', 'c', 4)], '/f.jsonl')
+    expect(log).toEqual([]) // still on [a]: no reset back to a→b→c→d
+    // Pi's next row is a child of `a`: it continues the moved-to branch.
+    sequencer.onDurableRows([row('e', 'a', 5)], '/f.jsonl')
+    expect(log).toEqual(['entry:e'])
+    sequencer.dispose()
+  })
+
+  it('the same after a move to the root: a late pre-move row does not restore the old branch', () => {
+    const { sink, log } = recordingSink()
+    const sequencer = new SessionSequencer(sink, { sessionId: 's', file: '/f.jsonl', attachExisting: false })
+    sequencer.onDurableRows([row('a', null, 1), row('b', 'a', 2)], '/f.jsonl')
+    sequencer.onLive([{ kind: 'leaf', leafId: null, oldLeafId: 'c' }])
+    log.length = 0
+    sequencer.onDurableRows([row('c', 'b', 3)], '/f.jsonl')
+    expect(log).toEqual([])
+    sequencer.onDurableRows([row('x', null, 4)], '/f.jsonl')
+    expect(log).toEqual(['entry:x'])
+    sequencer.dispose()
+  })
+
+  it('a late pre-move row whose own parent was also unread is still recognised once the old leaf is read', () => {
+    const { sink, log } = recordingSink()
+    const sequencer = new SessionSequencer(sink, { sessionId: 's', file: '/f.jsonl', attachExisting: false })
+    sequencer.onDurableRows([row('a', null, 1), row('b', 'a', 2)], '/f.jsonl')
+    sequencer.onLive([{ kind: 'leaf', leafId: 'a', oldLeafId: 'd' }])
+    log.length = 0
+    // c and d were both written before the move; they arrive in one read.
+    sequencer.onDurableRows([row('c', 'b', 3), row('d', 'c', 4)], '/f.jsonl')
+    expect(log).toEqual([])
+    sequencer.dispose()
+  })
 })

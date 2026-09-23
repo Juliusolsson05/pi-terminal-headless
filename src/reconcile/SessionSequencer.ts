@@ -73,6 +73,12 @@ export class SessionSequencer {
    * resetLeaf()). `undefined` means "no override: use the last row".
    */
   private leafOverride: string | null | undefined
+  /**
+   * What Pi was on when the live leaf last moved: its old leaf and the branch
+   * we were showing. Evidence for telling rows written BEFORE the move (read
+   * late — the durable reader polls) from rows that continue the new branch.
+   */
+  private navigation: { oldLeafId: string | null | undefined; oldBranch: Set<string> } | undefined
   /** Seed (don't emit) the first read of the file we attached to. */
   private seedNextRead: boolean
   private turnId: string | null = null
@@ -120,11 +126,12 @@ export class SessionSequencer {
   onDurableRows(rows: PiSessionRow[], file: string): void {
     if (this.disposed || file !== this.file) return // rule 5
     for (const row of rows) this.index.add(row)
-    // A /tree override holds only until a row lands on its branch (H6).
-    if (typeof this.leafOverride === 'string' && this.index.branch().some(row => row.id === this.leafOverride)) this.leafOverride = undefined
-    // After a move to the root, Pi's next row starts a new branch at the
-    // leaf, so any row that lands ends the override.
-    if (this.leafOverride === null && rows.length > 0) this.leafOverride = undefined
+    // A /tree override holds only until a row Pi wrote AFTER the move lands
+    // on its branch (H6); see rowsContinueNavigation.
+    if (this.leafOverride !== undefined && rows.length > 0 && this.rowsContinueNavigation()) {
+      this.leafOverride = undefined
+      this.navigation = undefined
+    }
     if (this.seedNextRead) {
       this.seedNextRead = false
       this.cursor.seed(this.currentBranch().map(row => row.id))
@@ -140,6 +147,7 @@ export class SessionSequencer {
     // a reset, so the consumer replaces what it had.
     this.index = new TreeIndex()
     this.leafOverride = undefined
+    this.navigation = undefined
     this.cursor.clear()
     this.seedNextRead = false
   }
@@ -182,6 +190,51 @@ export class SessionSequencer {
 
   private currentBranch(): PiSessionRow[] {
     return this.index.branch(this.leafOverride)
+  }
+
+  /**
+   * Does the newest row continue the branch Pi moved to, so the override can
+   * go? It must be ON that branch AND written after the move.
+   *
+   * WHY "on the branch" alone is wrong (Astra review, finding 8): the reader
+   * polls, so a row Pi wrote just BEFORE the move can be read just after it.
+   * Idle `/name` writes a metadata row `d` under leaf `c`; `/tree` then moves
+   * to `a` (no summary, no row). When `d` is read, its chain a→b→c→d does
+   * contain `a`, and the old rule dropped the override and resurrected the
+   * abandoned turns b, c. Pi itself is on `a` and its next row is a child of
+   * `a` (or, after a move to the root, a new root).
+   *
+   * The test: take the row just BELOW the override on the newest row's chain
+   * (after a move to the root: the chain's own root). A row written before
+   * the move reaches the override through the OLD branch, so that row is
+   * either on the branch we showed at the move, or on the old leaf's path
+   * (Pi appends in order, so once the old leaf is read its whole path is).
+   * A row written after the move reaches it through a new child.
+   *
+   * Not covered: several rows written before the move, NONE of them read at
+   * the move, and the old leaf not read yet — they look new, which is the
+   * old behaviour. It needs a poll gap spanning a burst of writes and a /tree
+   * picker interaction; the next row Pi writes corrects the view.
+   */
+  private rowsContinueNavigation(): boolean {
+    const chain = this.index.branch()
+    let below: PiSessionRow | undefined
+    if (this.leafOverride === null) {
+      below = chain[0]
+    } else {
+      const at = chain.findIndex(row => row.id === this.leafOverride)
+      if (at < 0) return false
+      below = chain[at + 1]
+      // The override row itself arrived last: the branches are identical.
+      if (!below) return true
+    }
+    if (!below) return false
+    const navigation = this.navigation
+    if (!navigation) return true
+    if (navigation.oldBranch.has(below.id)) return false
+    const oldLeaf = navigation.oldLeafId
+    if (oldLeaf && this.index.has(oldLeaf) && this.index.branch(oldLeaf).some(row => row.id === below.id)) return false
+    return true
   }
 
   private emitBranchChange(): void {
@@ -231,6 +284,8 @@ export class SessionSequencer {
         this.safe(() => this.sink.dialogs(output.dialog, output.trustPending))
         break
       case 'leaf':
+        // Snapshot BEFORE moving: the branch shown now is Pi's old branch.
+        this.navigation = { oldLeafId: output.oldLeafId, oldBranch: new Set(this.currentBranch().map(row => row.id)) }
         this.leafOverride = output.leafId
         this.emitBranchChange()
         break
@@ -257,6 +312,7 @@ export class SessionSequencer {
     this.index = new TreeIndex()
     this.cursor.seed([]) // rows of the new file are appended after the reset below
     this.leafOverride = undefined
+    this.navigation = undefined
     this.seedNextRead = false
     this.safe(() => this.sink.sessionSwitched(from, { sessionId: output.sessionId, file: output.file }, output.reason))
     const file = output.file

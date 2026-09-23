@@ -102,7 +102,7 @@ export class LiveStateProjector {
         out.push(...this.setPhase(this.turnId ? 'responding' : 'idle'))
         break
       case 'session_tree':
-        out.push({ kind: 'leaf', leafId: event.newLeafId }, { kind: 'doorbell', entryIds: event.summaryEntryId ? [event.summaryEntryId] : [] })
+        out.push({ kind: 'leaf', leafId: event.newLeafId, oldLeafId: event.oldLeafId }, { kind: 'doorbell', entryIds: event.summaryEntryId ? [event.summaryEntryId] : [] })
         break
       case 'ui_prompt_start':
         this.dialogs.push({ kind: event.kind, title: event.title ?? '' })

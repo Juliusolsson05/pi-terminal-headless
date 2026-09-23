@@ -29,6 +29,16 @@ export type LiveOutput =
   | { kind: 'doorbell'; entryIds: string[] }
   | { kind: 'api-error'; message: string; turnId: string | null; errorType: string }
   /** The live leaf moved without (necessarily) writing a row: a /tree move (H6). */
-  | { kind: 'leaf'; leafId: string | null }
+  | {
+    kind: 'leaf'
+    leafId: string | null
+    /**
+     * Pi's leaf BEFORE the move (session_tree's oldLeafId): the last row Pi
+     * wrote before navigating. Lets the sequencer tell a row written before
+     * the move but read after it from one that continues the new branch.
+     * Absent when the source does not know it.
+     */
+    oldLeafId?: string | null
+  }
   /** Pi now writes a different session (startup, /new, /resume, /fork, /clone). */
   | { kind: 'session'; sessionId: string; file: string; leafId: string | null; reason: string }
