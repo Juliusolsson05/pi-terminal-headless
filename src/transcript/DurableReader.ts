@@ -12,8 +12,15 @@
 //     reader can still observe a partial last line (it reads while Pi writes a
 //     large row), so only newline-terminated lines are committed.
 //   - Pi REWRITES the file in place when it loads an old-version file
-//     (migrateToCurrentVersion) and a user can replace it; offsets belong to
-//     one inode generation, so a shrink or inode change is a reset.
+//     (migrateToCurrentVersion), and a user can replace it. Offsets belong to
+//     one version of the file, so a change of inode, a shrink, or a changed
+//     header line is a reset. The header check exists because Pi's rewrite does
+//     NOT change the inode: session-manager.js `_rewriteFile` does
+//     `openSync(file, "w")` on the same path, and a v1→v3 migration adds
+//     ids, so the file GROWS. Without the check, the next read would resume
+//     mid-line at the old offset and chain the migrated rows onto the old ones.
+//     Every rewrite writes a new header line (migration adds `version`), so
+//     comparing line 0's bytes is enough.
 //
 // Wake-up policy (spec §4): `ring()` reads immediately — the bridge calls it
 // on `turn_end` / `agent_settled` / `session_tree` / `session_compact` /
@@ -52,6 +59,8 @@ export class DurableReader {
   private generation = 0
   private offset = 0
   private identity: string | null = null
+  /** Line 0's exact bytes plus its newline, once read; see the header comment. */
+  private headerBytes: Buffer | null = null
   private line = 0
   private partial = Buffer.alloc(0)
   private normalizer = new SessionRowNormalizer()
@@ -146,6 +155,7 @@ export class DurableReader {
     this.generation += 1
     this.offset = 0
     this.identity = null
+    this.headerBytes = null
     this.line = 0
     this.partial = Buffer.alloc(0)
     this.normalizer = new SessionRowNormalizer()
@@ -173,8 +183,14 @@ export class DurableReader {
       // A retarget while we were opening: this handle belongs to the old file.
       if (file !== this.file || this.stopped) return
       const identity = `${info.dev}:${info.ino}`
-      if (this.identity !== null && (identity !== this.identity || info.size < this.offset)) {
-        const reason = identity !== this.identity ? 'replaced' : 'truncated'
+      let rewritten = false
+      if (this.identity === identity && this.headerBytes && info.size >= this.headerBytes.length) {
+        const current = Buffer.alloc(this.headerBytes.length)
+        await handle.read(current, 0, current.length, 0)
+        rewritten = !current.equals(this.headerBytes)
+      }
+      if (this.identity !== null && (identity !== this.identity || info.size < this.offset || rewritten)) {
+        const reason = identity !== this.identity || rewritten ? 'replaced' : 'truncated'
         this.resetState()
         this.safe(() => this.events.onReset?.(reason, this.generation))
       }
@@ -203,6 +219,7 @@ export class DurableReader {
     for (;;) {
       const newline = combined.indexOf(0x0a, cursor)
       if (newline === -1) break
+      if (this.line === 0) this.headerBytes = Buffer.from(combined.subarray(cursor, newline + 1))
       const text = combined.subarray(cursor, newline).toString('utf8')
       const line = this.line
       this.line += 1

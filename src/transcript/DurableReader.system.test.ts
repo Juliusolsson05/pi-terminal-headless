@@ -88,7 +88,7 @@ describe('DurableReader', () => {
     const { reader, rows, resets } = collect(file)
     writeFileSync(file, recorded!.map(line).join(''))
     await reader.ring()
-    // Pi's in-place migration rewrite: a new inode with (here) fewer rows.
+    // A user replacing the file: a new inode with (here) fewer rows.
     const replacement = `${file}.tmp`
     writeFileSync(replacement, recorded!.slice(0, 4).map(line).join(''))
     renameSync(replacement, file)
@@ -101,6 +101,30 @@ describe('DurableReader', () => {
     const all = rows.map(row => row.id)
     const firstPass = recorded!.slice(1).map(row => row.id)
     expect(all).toEqual([...firstPass, ...recorded!.slice(1, 4).map(row => row.id), ...recorded!.slice(1, 3).map(row => row.id)])
+  })
+
+  it('Pi’s in-place migration (same inode, the file GROWS) is a new generation, never a mid-line resume', async () => {
+    // session-manager.js _rewriteFile: openSync(file, "w") on the same path.
+    // A v1 file becomes v3: the header gains `version`, rows gain ids.
+    const v1 = [
+      { type: 'session', id: 'mig', timestamp: '2025-11-20T00:00:00.000Z', cwd: '/p' },
+      { type: 'message', timestamp: '2025-11-20T00:00:01.000Z', message: { role: 'user', content: [{ type: 'text', text: 'hi' }] } },
+    ]
+    const v3 = [
+      { ...v1[0], version: 3 },
+      { ...v1[1], id: 'aaaa0001', parentId: null },
+    ]
+    const file = tempFile()
+    const { reader, rows, resets, errors } = collect(file)
+    writeFileSync(file, v1.map(line).join(''))
+    await reader.ring()
+    expect(rows.map(row => row.id)).toEqual(['v1-1'])
+    writeFileSync(file, v3.map(line).join('')) // same path, same inode
+    await reader.ring()
+    await reader.stop()
+    expect(resets).toEqual(['replaced'])
+    expect(errors).toEqual([])
+    expect(rows.map(row => row.id)).toEqual(['v1-1', 'aaaa0001'])
   })
 
   it('retarget drops the old file and follows the new one (a /new switch whose file appears later)', async () => {
