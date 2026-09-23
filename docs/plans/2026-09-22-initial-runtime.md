@@ -31,3 +31,11 @@ Tracking issue: Juliusolsson05/agent-code#1132.
   `agent_settled` (never `message_end`), the bridge always sends
   `deliverAs: 'followUp'` (a busy prompt without it is silently lost), the live
   leaf comes from `session_tree`. See research/census-2026-09-22.md.
+- 2026-09-22 — Stage 2: bridge extension + BridgeServer + LiveStateProjector.
+  Reading Pi's source (agent-session-runtime.ts) showed /new, /resume, /fork
+  and /reload re-run every extension factory, so the bridge keeps ONE
+  process-wide link on a globalThis singleton and always calls the newest
+  runtime's `pi` (a per-factory design would open a connection per switch and
+  go inert after the first /new because the env is deleted on first load).
+  Verified in the real pi 0.87.1 by the opt-in live tier, loading the bridge
+  as a single copied file the way the app ships it.
