@@ -1,0 +1,17 @@
+{
+  "_comment": "Source of truth for the Pi release this package has explicitly accepted as supported. The upstream-watch workflow compares npm's `latest` dist-tag of @earendil-works/pi-coding-agent against `accepted`; a human bumps `accepted` only after a compatibility review. Never edited by automation. See support/README.md.",
+  "providers": {
+    "pi": {
+      "label": "Pi",
+      "pkg": "@earendil-works/pi-coding-agent",
+      "changelog": "https://github.com/earendil-works/pi/blob/main/packages/coding-agent/CHANGELOG.md",
+      "accepted": "0.87.1",
+      "checkedAt": "2026-09-22",
+      "notes": [
+        "0.87.1 — the release the design research was done against (source HEAD 96724621 of earendil-works/pi). The Stage 0 recordings pin the version they were made with in each fixture's meta.recordedWith; if that differs from this value, the recordings win and this entry is updated in the same PR.",
+        "This package couples to three surfaces Pi does not promise to keep across 0.x minors: (1) the session JSONL format (header version 3, entry types and message roles; src/transcript/SessionFile.ts), (2) the extension event names and payload fields the bridge subscribes to (src/bridge/extension.ts), and (3) the CLI flags --session-id and -e (src/launch/prepareLaunch.ts). Unknown entry types and fields are ignored, so most drift degrades rather than breaks; a renamed extension event does NOT fail closed on its own, which is why every drift needs the compatibility pass, not just a green suite.",
+        "The package name moved from @mariozechner/pi-coding-agent (deprecated at 0.73.1) to @earendil-works/pi-coding-agent; the source moved from badlogic/pi-mono to earendil-works/pi."
+      ]
+    }
+  }
+}

@@ -1,0 +1,2227 @@
+{
+ "meta": {
+  "recordedWith": "0.87.1",
+  "scenario": "tool",
+  "recordedAt": "2026-09-23",
+  "node": "v24.14.1",
+  "platform": "darwin-arm64",
+  "terminal": "@xterm/headless",
+  "cols": 100,
+  "rows": 30
+ },
+ "sessionIdLaunched": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+ "notes": [],
+ "steps": [
+  {
+   "t": 12,
+   "action": "spawn",
+   "detail": {
+    "process": 1,
+    "args": [
+     "--provider",
+     "faux",
+     "--model",
+     "faux-1",
+     "-e",
+     "<scripts>/probe/faux.ts",
+     "-e",
+     "<scripts>/probe/recorder.ts",
+     "--session-id",
+     "5c258f17-45f0-4195-bcad-d2b3ba39462b"
+    ]
+   }
+  },
+  {
+   "t": 346,
+   "action": "waited",
+   "detail": {
+    "label": "session_start #1"
+   }
+  },
+  {
+   "t": 1003,
+   "action": "type",
+   "detail": {
+    "text": "please [tool] now"
+   }
+  },
+  {
+   "t": 1003,
+   "action": "key",
+   "detail": {
+    "name": "enter"
+   }
+  },
+  {
+   "t": 1131,
+   "action": "waited",
+   "detail": {
+    "label": "agent_settled #1"
+   }
+  },
+  {
+   "t": 1487,
+   "action": "type",
+   "detail": {
+    "text": "and again [tool]"
+   }
+  },
+  {
+   "t": 1487,
+   "action": "key",
+   "detail": {
+    "name": "enter"
+   }
+  },
+  {
+   "t": 1614,
+   "action": "waited",
+   "detail": {
+    "label": "agent_settled #2"
+   }
+  },
+  {
+   "t": 1918,
+   "action": "key",
+   "detail": {
+    "name": "ctrl-d"
+   }
+  },
+  {
+   "t": 1995,
+   "action": "waited",
+   "detail": {
+    "label": "exit after ctrl-d"
+   }
+  }
+ ],
+ "events": [
+  {
+   "t": 332,
+   "name": "session_start",
+   "idle": true,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "6d6565e6",
+   "fileBytes": -1,
+   "keys": [
+    "reason",
+    "type"
+   ],
+   "reason": "startup"
+  },
+  {
+   "t": 333,
+   "name": "resources_discover",
+   "idle": true,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "6d6565e6",
+   "fileBytes": -1,
+   "keys": [
+    "cwd",
+    "reason",
+    "type"
+   ],
+   "cwd": "/sandbox/project",
+   "reason": "startup"
+  },
+  {
+   "t": 1008,
+   "name": "input",
+   "idle": true,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "6d6565e6",
+   "fileBytes": -1,
+   "keys": [
+    "images",
+    "source",
+    "streamingBehavior",
+    "text",
+    "type"
+   ],
+   "source": "interactive",
+   "textLength": 17,
+   "probeTag": null
+  },
+  {
+   "t": 1008,
+   "name": "before_agent_start",
+   "idle": true,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "6d6565e6",
+   "fileBytes": -1,
+   "keys": [
+    "images",
+    "prompt",
+    "systemPrompt",
+    "systemPromptOptions",
+    "type"
+   ],
+   "prompt": "please [tool] now"
+  },
+  {
+   "t": 1009,
+   "name": "agent_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "6d6565e6",
+   "fileBytes": -1,
+   "keys": [
+    "type"
+   ]
+  },
+  {
+   "t": 1009,
+   "name": "turn_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "6d6565e6",
+   "fileBytes": -1,
+   "keys": [
+    "timestamp",
+    "turnIndex",
+    "type"
+   ],
+   "turnIndex": 0,
+   "timestamp": 1790121756408
+  },
+  {
+   "t": 1010,
+   "name": "message_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "6d6565e6",
+   "fileBytes": -1,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "system",
+    "contentTypes": "string",
+    "timestamp": 1790121756408
+   }
+  },
+  {
+   "t": 1010,
+   "name": "message_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "6d6565e6",
+   "fileBytes": -1,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "system",
+    "contentTypes": "string",
+    "timestamp": 1790121756408
+   }
+  },
+  {
+   "t": 1010,
+   "name": "message_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "98a1d501",
+   "fileBytes": -1,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "user",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121756408
+   }
+  },
+  {
+   "t": 1010,
+   "name": "message_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "98a1d501",
+   "fileBytes": -1,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "user",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121756408
+   }
+  },
+  {
+   "t": 1012,
+   "name": "message_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "63a4c0a6",
+   "fileBytes": -1,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "assistant",
+    "stopReason": "pending",
+    "contentTypes": [],
+    "toolCallIds": [],
+    "timestamp": 1790121756410
+   }
+  },
+  {
+   "t": 1012,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "63a4c0a6",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "thinking_start"
+  },
+  {
+   "t": 1033,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "63a4c0a6",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "thinking_delta"
+  },
+  {
+   "t": 1035,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "63a4c0a6",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "thinking_delta"
+  },
+  {
+   "t": 1035,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "63a4c0a6",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "thinking_end"
+  },
+  {
+   "t": 1036,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "63a4c0a6",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_start"
+  },
+  {
+   "t": 1043,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "63a4c0a6",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_delta"
+  },
+  {
+   "t": 1048,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "63a4c0a6",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_delta"
+  },
+  {
+   "t": 1049,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "63a4c0a6",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_end"
+  },
+  {
+   "t": 1049,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "63a4c0a6",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "toolcall_start"
+  },
+  {
+   "t": 1056,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "63a4c0a6",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "toolcall_delta"
+  },
+  {
+   "t": 1069,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "63a4c0a6",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "toolcall_delta"
+  },
+  {
+   "t": 1071,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "63a4c0a6",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "toolcall_delta"
+  },
+  {
+   "t": 1072,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "63a4c0a6",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "toolcall_end"
+  },
+  {
+   "t": 1072,
+   "name": "message_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "63a4c0a6",
+   "fileBytes": -1,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "assistant",
+    "stopReason": "toolUse",
+    "contentTypes": [
+     "thinking",
+     "text",
+     "toolCall"
+    ],
+    "toolCallIds": [
+     "tool:1790121756410:h9bgynxqaur"
+    ],
+    "timestamp": 1790121756410
+   }
+  },
+  {
+   "t": 1072,
+   "name": "tool_execution_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "6ef15821",
+   "fileBytes": 7598,
+   "keys": [
+    "args",
+    "toolCallId",
+    "toolName",
+    "type"
+   ],
+   "toolCallId": "tool:1790121756410:h9bgynxqaur",
+   "toolName": "bash"
+  },
+  {
+   "t": 1073,
+   "name": "tool_call",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "6ef15821",
+   "fileBytes": 7598,
+   "keys": [
+    "input",
+    "toolCallId",
+    "toolName",
+    "type"
+   ],
+   "toolName": "bash",
+   "toolCallId": "tool:1790121756410:h9bgynxqaur"
+  },
+  {
+   "t": 1073,
+   "name": "tool_execution_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "6ef15821",
+   "fileBytes": 7598,
+   "keys": [
+    "args",
+    "partialResult",
+    "toolCallId",
+    "toolName",
+    "type"
+   ],
+   "toolCallId": "tool:1790121756410:h9bgynxqaur",
+   "toolName": "bash"
+  },
+  {
+   "t": 1103,
+   "name": "tool_execution_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "6ef15821",
+   "fileBytes": 7598,
+   "keys": [
+    "args",
+    "partialResult",
+    "toolCallId",
+    "toolName",
+    "type"
+   ],
+   "toolCallId": "tool:1790121756410:h9bgynxqaur",
+   "toolName": "bash"
+  },
+  {
+   "t": 1105,
+   "name": "tool_result",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "6ef15821",
+   "fileBytes": 7598,
+   "keys": [
+    "content",
+    "details",
+    "input",
+    "isError",
+    "toolCallId",
+    "toolName",
+    "type",
+    "usage"
+   ],
+   "toolName": "bash",
+   "toolCallId": "tool:1790121756410:h9bgynxqaur",
+   "isError": false
+  },
+  {
+   "t": 1105,
+   "name": "tool_execution_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "6ef15821",
+   "fileBytes": 7598,
+   "keys": [
+    "isError",
+    "result",
+    "toolCallId",
+    "toolName",
+    "type"
+   ],
+   "toolCallId": "tool:1790121756410:h9bgynxqaur",
+   "toolName": "bash",
+   "isError": false
+  },
+  {
+   "t": 1105,
+   "name": "message_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "6ef15821",
+   "fileBytes": 7598,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "toolResult",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "toolCallId": "tool:1790121756410:h9bgynxqaur",
+    "timestamp": 1790121756504
+   }
+  },
+  {
+   "t": 1106,
+   "name": "message_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "6ef15821",
+   "fileBytes": 7598,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "toolResult",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "toolCallId": "tool:1790121756410:h9bgynxqaur",
+    "timestamp": 1790121756504
+   }
+  },
+  {
+   "t": 1106,
+   "name": "turn_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "1871a7f4",
+   "fileBytes": 7889,
+   "keys": [
+    "context",
+    "continue",
+    "entries",
+    "message",
+    "messageEntryId",
+    "outcome",
+    "toolResultEntryIds",
+    "toolResults",
+    "turnIndex",
+    "type"
+   ],
+   "turnIndex": 0,
+   "messageEntryId": "6ef15821",
+   "toolResultEntryIds": [
+    "1871a7f4"
+   ],
+   "message": {
+    "role": "assistant",
+    "stopReason": "toolUse",
+    "contentTypes": [
+     "thinking",
+     "text",
+     "toolCall"
+    ],
+    "toolCallIds": [
+     "tool:1790121756410:h9bgynxqaur"
+    ],
+    "timestamp": 1790121756410
+   }
+  },
+  {
+   "t": 1107,
+   "name": "turn_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "1871a7f4",
+   "fileBytes": 7889,
+   "keys": [
+    "timestamp",
+    "turnIndex",
+    "type"
+   ],
+   "turnIndex": 1,
+   "timestamp": 1790121756506
+  },
+  {
+   "t": 1107,
+   "name": "message_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "1871a7f4",
+   "fileBytes": 7889,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "assistant",
+    "stopReason": "pending",
+    "contentTypes": [],
+    "toolCallIds": [],
+    "timestamp": 1790121756506
+   }
+  },
+  {
+   "t": 1107,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "1871a7f4",
+   "fileBytes": 7889,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_start"
+  },
+  {
+   "t": 1118,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "1871a7f4",
+   "fileBytes": 7889,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_delta"
+  },
+  {
+   "t": 1121,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "1871a7f4",
+   "fileBytes": 7889,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_delta"
+  },
+  {
+   "t": 1121,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "1871a7f4",
+   "fileBytes": 7889,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_end"
+  },
+  {
+   "t": 1121,
+   "name": "message_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "1871a7f4",
+   "fileBytes": 7889,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "assistant",
+    "stopReason": "stop",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121756506
+   }
+  },
+  {
+   "t": 1121,
+   "name": "turn_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "c91db150",
+   "fileBytes": 8347,
+   "keys": [
+    "context",
+    "continue",
+    "entries",
+    "message",
+    "messageEntryId",
+    "outcome",
+    "toolResultEntryIds",
+    "toolResults",
+    "turnIndex",
+    "type"
+   ],
+   "turnIndex": 1,
+   "messageEntryId": "c91db150",
+   "toolResultEntryIds": [],
+   "message": {
+    "role": "assistant",
+    "stopReason": "stop",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121756506
+   }
+  },
+  {
+   "t": 1122,
+   "name": "agent_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "c91db150",
+   "fileBytes": 8347,
+   "keys": [
+    "messages",
+    "type"
+   ],
+   "messageCount": 5
+  },
+  {
+   "t": 1122,
+   "name": "agent_before_settle",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "c91db150",
+   "fileBytes": 8347,
+   "keys": [
+    "context",
+    "continue",
+    "entries",
+    "outcome",
+    "type"
+   ],
+   "outcome": "completed",
+   "continue": false
+  },
+  {
+   "t": 1122,
+   "name": "agent_settled",
+   "idle": true,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "c91db150",
+   "fileBytes": 8347,
+   "keys": [
+    "type"
+   ]
+  },
+  {
+   "t": 1489,
+   "name": "input",
+   "idle": true,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "c91db150",
+   "fileBytes": 8347,
+   "keys": [
+    "images",
+    "source",
+    "streamingBehavior",
+    "text",
+    "type"
+   ],
+   "source": "interactive",
+   "textLength": 16,
+   "probeTag": null
+  },
+  {
+   "t": 1489,
+   "name": "before_agent_start",
+   "idle": true,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "c91db150",
+   "fileBytes": 8347,
+   "keys": [
+    "images",
+    "prompt",
+    "systemPrompt",
+    "systemPromptOptions",
+    "type"
+   ],
+   "prompt": "and again [tool]"
+  },
+  {
+   "t": 1489,
+   "name": "agent_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "c91db150",
+   "fileBytes": 8347,
+   "keys": [
+    "type"
+   ]
+  },
+  {
+   "t": 1489,
+   "name": "turn_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "c91db150",
+   "fileBytes": 8347,
+   "keys": [
+    "timestamp",
+    "turnIndex",
+    "type"
+   ],
+   "turnIndex": 0,
+   "timestamp": 1790121756888
+  },
+  {
+   "t": 1490,
+   "name": "message_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "c91db150",
+   "fileBytes": 8347,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "user",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121756888
+   }
+  },
+  {
+   "t": 1490,
+   "name": "message_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "c91db150",
+   "fileBytes": 8347,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "user",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121756888
+   }
+  },
+  {
+   "t": 1490,
+   "name": "message_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "2c86f9c0",
+   "fileBytes": 8549,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "assistant",
+    "stopReason": "pending",
+    "contentTypes": [],
+    "toolCallIds": [],
+    "timestamp": 1790121756889
+   }
+  },
+  {
+   "t": 1490,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "2c86f9c0",
+   "fileBytes": 8549,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "thinking_start"
+  },
+  {
+   "t": 1501,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "2c86f9c0",
+   "fileBytes": 8549,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "thinking_delta"
+  },
+  {
+   "t": 1505,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "2c86f9c0",
+   "fileBytes": 8549,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "thinking_delta"
+  },
+  {
+   "t": 1506,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "2c86f9c0",
+   "fileBytes": 8549,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "thinking_end"
+  },
+  {
+   "t": 1506,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "2c86f9c0",
+   "fileBytes": 8549,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_start"
+  },
+  {
+   "t": 1517,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "2c86f9c0",
+   "fileBytes": 8549,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_delta"
+  },
+  {
+   "t": 1519,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "2c86f9c0",
+   "fileBytes": 8549,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_delta"
+  },
+  {
+   "t": 1519,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "2c86f9c0",
+   "fileBytes": 8549,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_end"
+  },
+  {
+   "t": 1520,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "2c86f9c0",
+   "fileBytes": 8549,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "toolcall_start"
+  },
+  {
+   "t": 1533,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "2c86f9c0",
+   "fileBytes": 8549,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "toolcall_delta"
+  },
+  {
+   "t": 1543,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "2c86f9c0",
+   "fileBytes": 8549,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "toolcall_delta"
+  },
+  {
+   "t": 1543,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "2c86f9c0",
+   "fileBytes": 8549,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "toolcall_end"
+  },
+  {
+   "t": 1543,
+   "name": "message_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "2c86f9c0",
+   "fileBytes": 8549,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "assistant",
+    "stopReason": "toolUse",
+    "contentTypes": [
+     "thinking",
+     "text",
+     "toolCall"
+    ],
+    "toolCallIds": [
+     "tool:1790121756889:sa9vt5v1r5o"
+    ],
+    "timestamp": 1790121756889
+   }
+  },
+  {
+   "t": 1544,
+   "name": "tool_execution_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "c9604765",
+   "fileBytes": 9187,
+   "keys": [
+    "args",
+    "toolCallId",
+    "toolName",
+    "type"
+   ],
+   "toolCallId": "tool:1790121756889:sa9vt5v1r5o",
+   "toolName": "bash"
+  },
+  {
+   "t": 1544,
+   "name": "tool_call",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "c9604765",
+   "fileBytes": 9187,
+   "keys": [
+    "input",
+    "toolCallId",
+    "toolName",
+    "type"
+   ],
+   "toolName": "bash",
+   "toolCallId": "tool:1790121756889:sa9vt5v1r5o"
+  },
+  {
+   "t": 1544,
+   "name": "tool_execution_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "c9604765",
+   "fileBytes": 9187,
+   "keys": [
+    "args",
+    "partialResult",
+    "toolCallId",
+    "toolName",
+    "type"
+   ],
+   "toolCallId": "tool:1790121756889:sa9vt5v1r5o",
+   "toolName": "bash"
+  },
+  {
+   "t": 1573,
+   "name": "tool_execution_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "c9604765",
+   "fileBytes": 9187,
+   "keys": [
+    "args",
+    "partialResult",
+    "toolCallId",
+    "toolName",
+    "type"
+   ],
+   "toolCallId": "tool:1790121756889:sa9vt5v1r5o",
+   "toolName": "bash"
+  },
+  {
+   "t": 1574,
+   "name": "tool_result",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "c9604765",
+   "fileBytes": 9187,
+   "keys": [
+    "content",
+    "details",
+    "input",
+    "isError",
+    "toolCallId",
+    "toolName",
+    "type",
+    "usage"
+   ],
+   "toolName": "bash",
+   "toolCallId": "tool:1790121756889:sa9vt5v1r5o",
+   "isError": false
+  },
+  {
+   "t": 1574,
+   "name": "tool_execution_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "c9604765",
+   "fileBytes": 9187,
+   "keys": [
+    "isError",
+    "result",
+    "toolCallId",
+    "toolName",
+    "type"
+   ],
+   "toolCallId": "tool:1790121756889:sa9vt5v1r5o",
+   "toolName": "bash",
+   "isError": false
+  },
+  {
+   "t": 1574,
+   "name": "message_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "c9604765",
+   "fileBytes": 9187,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "toolResult",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "toolCallId": "tool:1790121756889:sa9vt5v1r5o",
+    "timestamp": 1790121756973
+   }
+  },
+  {
+   "t": 1575,
+   "name": "message_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "c9604765",
+   "fileBytes": 9187,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "toolResult",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "toolCallId": "tool:1790121756889:sa9vt5v1r5o",
+    "timestamp": 1790121756973
+   }
+  },
+  {
+   "t": 1575,
+   "name": "turn_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "57127ade",
+   "fileBytes": 9478,
+   "keys": [
+    "context",
+    "continue",
+    "entries",
+    "message",
+    "messageEntryId",
+    "outcome",
+    "toolResultEntryIds",
+    "toolResults",
+    "turnIndex",
+    "type"
+   ],
+   "turnIndex": 0,
+   "messageEntryId": "c9604765",
+   "toolResultEntryIds": [
+    "57127ade"
+   ],
+   "message": {
+    "role": "assistant",
+    "stopReason": "toolUse",
+    "contentTypes": [
+     "thinking",
+     "text",
+     "toolCall"
+    ],
+    "toolCallIds": [
+     "tool:1790121756889:sa9vt5v1r5o"
+    ],
+    "timestamp": 1790121756889
+   }
+  },
+  {
+   "t": 1575,
+   "name": "turn_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "57127ade",
+   "fileBytes": 9478,
+   "keys": [
+    "timestamp",
+    "turnIndex",
+    "type"
+   ],
+   "turnIndex": 1,
+   "timestamp": 1790121756974
+  },
+  {
+   "t": 1576,
+   "name": "message_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "57127ade",
+   "fileBytes": 9478,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "assistant",
+    "stopReason": "pending",
+    "contentTypes": [],
+    "toolCallIds": [],
+    "timestamp": 1790121756975
+   }
+  },
+  {
+   "t": 1576,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "57127ade",
+   "fileBytes": 9478,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_start"
+  },
+  {
+   "t": 1590,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "57127ade",
+   "fileBytes": 9478,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_delta"
+  },
+  {
+   "t": 1590,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "57127ade",
+   "fileBytes": 9478,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_end"
+  },
+  {
+   "t": 1590,
+   "name": "message_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "57127ade",
+   "fileBytes": 9478,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "assistant",
+    "stopReason": "stop",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121756975
+   }
+  },
+  {
+   "t": 1590,
+   "name": "turn_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "c85e0139",
+   "fileBytes": 9936,
+   "keys": [
+    "context",
+    "continue",
+    "entries",
+    "message",
+    "messageEntryId",
+    "outcome",
+    "toolResultEntryIds",
+    "toolResults",
+    "turnIndex",
+    "type"
+   ],
+   "turnIndex": 1,
+   "messageEntryId": "c85e0139",
+   "toolResultEntryIds": [],
+   "message": {
+    "role": "assistant",
+    "stopReason": "stop",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121756975
+   }
+  },
+  {
+   "t": 1590,
+   "name": "agent_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "c85e0139",
+   "fileBytes": 9936,
+   "keys": [
+    "messages",
+    "type"
+   ],
+   "messageCount": 4
+  },
+  {
+   "t": 1590,
+   "name": "agent_before_settle",
+   "idle": false,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "c85e0139",
+   "fileBytes": 9936,
+   "keys": [
+    "context",
+    "continue",
+    "entries",
+    "outcome",
+    "type"
+   ],
+   "outcome": "completed",
+   "continue": false
+  },
+  {
+   "t": 1590,
+   "name": "agent_settled",
+   "idle": true,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "c85e0139",
+   "fileBytes": 9936,
+   "keys": [
+    "type"
+   ]
+  },
+  {
+   "t": 1969,
+   "name": "session_shutdown",
+   "idle": true,
+   "pending": false,
+   "sessionId": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "leafId": "c85e0139",
+   "fileBytes": 9936,
+   "keys": [
+    "reason",
+    "type"
+   ],
+   "reason": "quit"
+  }
+ ],
+ "growth": [
+  {
+   "t": 1077,
+   "file": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "bytes": 7598
+  },
+  {
+   "t": 1109,
+   "file": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "bytes": 7889
+  },
+  {
+   "t": 1131,
+   "file": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "bytes": 8347
+  },
+  {
+   "t": 1491,
+   "file": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "bytes": 8549
+  },
+  {
+   "t": 1554,
+   "file": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "bytes": 9187
+  },
+  {
+   "t": 1575,
+   "file": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "bytes": 9478
+  },
+  {
+   "t": 1597,
+   "file": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl",
+   "bytes": 9936
+  }
+ ],
+ "exits": [
+  {
+   "t": 1976,
+   "process": 1,
+   "exitCode": 0,
+   "signal": 0
+  }
+ ],
+ "pty": {
+  "chunks": 60,
+  "bytes": 21062,
+  "da1HandAnswered": 0,
+  "screen": [
+   "Warning: No project session found with id '5c258f17-45f0-4195-bcad-d2b3ba39462b'; creating a new ses",
+   "sion with that id.",
+   "",
+   " pi v0.87.1                                                                                         ",
+   " escape interrupt · ctrl+c/ctrl+d clear/exit · / commands · ! bash · ctrl+o more                    ",
+   " Press ctrl+o to show full startup help and loaded resources.                                       ",
+   "                                                                                                    ",
+   " Pi can explain its own features and look up its docs. Ask it how to use or extend Pi.              ",
+   "",
+   "[Extensions]                                                                                        ",
+   "  faux.ts, recorder.ts                                                                              ",
+   "",
+   "",
+   " Warning: fd not found. Offline mode enabled, skipping download.                                    ",
+   "",
+   "                                                                                                    ",
+   " please [tool] now                                                                                  ",
+   "                                                                                                    ",
+   "",
+   " I should run a command.                                                                            ",
+   "",
+   " Running a command.                                                                                 ",
+   "",
+   "                                                                                                    ",
+   " $ echo probe-tool-output                                                                           ",
+   "                                                                                                    ",
+   " probe-tool-output                                                                                  ",
+   "                                                                                                    ",
+   " Took 0.0s                                                                                          ",
+   "                                                                                                    ",
+   "",
+   " Tool finished. Done.                                                                               ",
+   "",
+   "                                                                                                    ",
+   " and again [tool]                                                                                   ",
+   "                                                                                                    ",
+   "",
+   " I should run a command.                                                                            ",
+   "",
+   " Running a command.                                                                                 ",
+   "",
+   "                                                                                                    ",
+   " $ echo probe-tool-output                                                                           ",
+   "                                                                                                    ",
+   " probe-tool-output                                                                                  ",
+   "                                                                                                    ",
+   " Took 0.0s                                                                                          ",
+   "                                                                                                    ",
+   "",
+   " Tool finished. Done.                                                                               ",
+   "",
+   "────────────────────────────────────────────────────────────────────────────────────────────────────",
+   "                                                                                                    ",
+   "────────────────────────────────────────────────────────────────────────────────────────────────────",
+   "/sandbox/project (master)",
+   "↑1.6k ↓52 R4.6k W1.6k CH96.0% 1.3%/128k (auto)                                                faux-1",
+   "To resume this session: pi --session 5c258f17-45f0-4195-bcad-d2b3ba39462b"
+  ]
+ },
+ "files": {
+  "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl": [
+   {
+    "type": "session",
+    "version": 3,
+    "id": "5c258f17-45f0-4195-bcad-d2b3ba39462b",
+    "timestamp": "2026-09-23T00:02:35.581Z",
+    "cwd": "/sandbox/project"
+   },
+   {
+    "type": "model_change",
+    "id": "9ce621ff",
+    "parentId": null,
+    "timestamp": "2026-09-23T00:02:35.609Z",
+    "provider": "faux",
+    "modelId": "faux-1"
+   },
+   {
+    "type": "thinking_level_change",
+    "id": "6d6565e6",
+    "parentId": "9ce621ff",
+    "timestamp": "2026-09-23T00:02:35.609Z",
+    "thinkingLevel": "off"
+   },
+   {
+    "type": "message",
+    "id": "98a1d501",
+    "parentId": "6d6565e6",
+    "timestamp": "2026-09-23T00:02:36.409Z",
+    "message": {
+     "role": "system",
+     "content": "<text:0>",
+     "sections": {
+      "preamble": "<text:169>",
+      "tools": "<text:339>",
+      "rules": "<text:839>",
+      "docs": "<text:1592>",
+      "cwd": "<text:100>"
+     },
+     "timestamp": 1790121756408,
+     "toolsAdded": [
+      {
+       "name": "read",
+       "description": "Read the contents of a file. Supports text files and images (jpg, png, gif, webp, bmp). Images are sent as attachments. For text files, output is truncated to 2000 lines or 50KB (whichever is hit first). Use offset/limit for large files. When you need the full file, continue with offset until complete.",
+       "parameters": {
+        "type": "object",
+        "required": [
+         "path"
+        ],
+        "properties": {
+         "path": {
+          "type": "string",
+          "description": "Path to the file to read (relative or absolute)"
+         },
+         "offset": {
+          "type": "number",
+          "description": "Line number to start reading from (1-indexed)"
+         },
+         "limit": {
+          "type": "number",
+          "description": "Maximum number of lines to read"
+         }
+        }
+       },
+       "constrainedSampling": {
+        "type": "json_schema",
+        "strict": "prefer"
+       }
+      },
+      {
+       "name": "bash",
+       "description": "Execute a bash command in the current working directory. Returns stdout and stderr. Output is truncated to last 2000 lines or 50KB (whichever is hit first). If truncated, full output is saved to a temp file. Optionally provide a timeout in seconds.",
+       "parameters": {
+        "type": "object",
+        "required": [
+         "command"
+        ],
+        "properties": {
+         "command": {
+          "type": "string",
+          "description": "Shell command to execute"
+         },
+         "timeout": {
+          "type": "number",
+          "description": "Timeout in seconds (optional, no default timeout)"
+         }
+        }
+       },
+       "constrainedSampling": {
+        "type": "json_schema",
+        "strict": "prefer"
+       }
+      },
+      {
+       "name": "edit",
+       "description": "Edit a single file using exact text replacement. Every edits[].oldText must match a unique, non-overlapping region of the original file. If two changes affect the same block or nearby lines, merge them into one edit instead of emitting overlapping edits. Do not include large unchanged regions just to connect distant changes.",
+       "parameters": {
+        "type": "object",
+        "required": [
+         "path",
+         "edits"
+        ],
+        "properties": {
+         "path": {
+          "type": "string",
+          "description": "Path to the file to edit (relative or absolute)"
+         },
+         "edits": {
+          "type": "array",
+          "items": {
+           "type": "object",
+           "required": [
+            "oldText",
+            "newText"
+           ],
+           "properties": {
+            "oldText": {
+             "type": "string",
+             "description": "Exact text for one targeted replacement. It must be unique in the original file and must not overlap with any other edits[].oldText in the same call."
+            },
+            "newText": {
+             "type": "string",
+             "description": "Replacement text for this targeted edit."
+            }
+           }
+          },
+          "description": "One or more targeted replacements. Each edit is matched against the original file, not incrementally. Do not include overlapping or nested edits. If two changes touch the same block or nearby lines, merge them into one edit instead."
+         }
+        }
+       },
+       "constrainedSampling": {
+        "type": "json_schema",
+        "strict": "prefer"
+       }
+      },
+      {
+       "name": "write",
+       "description": "Write content to a file. Creates the file if it doesn't exist, overwrites if it does. Automatically creates parent directories.",
+       "parameters": {
+        "type": "object",
+        "required": [
+         "path",
+         "content"
+        ],
+        "properties": {
+         "path": {
+          "type": "string",
+          "description": "Path to the file to write (relative or absolute)"
+         },
+         "content": {
+          "type": "string",
+          "description": "Content to write to the file"
+         }
+        }
+       },
+       "constrainedSampling": {
+        "type": "json_schema",
+        "strict": "prefer"
+       }
+      }
+     ]
+    }
+   },
+   {
+    "type": "message",
+    "id": "63a4c0a6",
+    "parentId": "98a1d501",
+    "timestamp": "2026-09-23T00:02:36.409Z",
+    "message": {
+     "role": "user",
+     "content": [
+      {
+       "type": "text",
+       "text": "please [tool] now"
+      }
+     ],
+     "timestamp": 1790121756408
+    }
+   },
+   {
+    "type": "message",
+    "id": "6ef15821",
+    "parentId": "63a4c0a6",
+    "timestamp": "2026-09-23T00:02:36.471Z",
+    "message": {
+     "role": "assistant",
+     "content": [
+      {
+       "type": "thinking",
+       "thinking": "I should run a command."
+      },
+      {
+       "type": "text",
+       "text": "Running a command."
+      },
+      {
+       "type": "toolCall",
+       "id": "tool:1790121756410:h9bgynxqaur",
+       "name": "bash",
+       "arguments": {
+        "command": "echo probe-tool-output"
+       }
+      }
+     ],
+     "api": "faux:1790121755598:5q9maxsa0gj",
+     "provider": "faux",
+     "model": "faux-1",
+     "usage": {
+      "input": 1518,
+      "output": 21,
+      "cacheRead": 0,
+      "cacheWrite": 1518,
+      "totalTokens": 3057,
+      "cost": {
+       "input": 0,
+       "output": 0,
+       "cacheRead": 0,
+       "cacheWrite": 0,
+       "total": 0
+      }
+     },
+     "stopReason": "toolUse",
+     "timestamp": 1790121756410
+    }
+   },
+   {
+    "type": "message",
+    "id": "1871a7f4",
+    "parentId": "6ef15821",
+    "timestamp": "2026-09-23T00:02:36.505Z",
+    "message": {
+     "role": "toolResult",
+     "toolCallId": "tool:1790121756410:h9bgynxqaur",
+     "toolName": "bash",
+     "content": [
+      {
+       "type": "text",
+       "text": "probe-tool-output\n"
+      }
+     ],
+     "isError": false,
+     "timestamp": 1790121756504
+    }
+   },
+   {
+    "type": "message",
+    "id": "c91db150",
+    "parentId": "1871a7f4",
+    "timestamp": "2026-09-23T00:02:36.520Z",
+    "message": {
+     "role": "assistant",
+     "content": [
+      {
+       "type": "text",
+       "text": "Tool finished. Done."
+      }
+     ],
+     "api": "faux:1790121755598:5q9maxsa0gj",
+     "provider": "faux",
+     "model": "faux-1",
+     "usage": {
+      "input": 33,
+      "output": 5,
+      "cacheRead": 1518,
+      "cacheWrite": 33,
+      "totalTokens": 1589,
+      "cost": {
+       "input": 0,
+       "output": 0,
+       "cacheRead": 0,
+       "cacheWrite": 0,
+       "total": 0
+      }
+     },
+     "stopReason": "stop",
+     "timestamp": 1790121756506
+    }
+   },
+   {
+    "type": "message",
+    "id": "2c86f9c0",
+    "parentId": "c91db150",
+    "timestamp": "2026-09-23T00:02:36.889Z",
+    "message": {
+     "role": "user",
+     "content": [
+      {
+       "type": "text",
+       "text": "and again [tool]"
+      }
+     ],
+     "timestamp": 1790121756888
+    }
+   },
+   {
+    "type": "message",
+    "id": "c9604765",
+    "parentId": "2c86f9c0",
+    "timestamp": "2026-09-23T00:02:36.943Z",
+    "message": {
+     "role": "assistant",
+     "content": [
+      {
+       "type": "thinking",
+       "thinking": "I should run a command."
+      },
+      {
+       "type": "text",
+       "text": "Running a command."
+      },
+      {
+       "type": "toolCall",
+       "id": "tool:1790121756889:sa9vt5v1r5o",
+       "name": "bash",
+       "arguments": {
+        "command": "echo probe-tool-output"
+       }
+      }
+     ],
+     "api": "faux:1790121755598:5q9maxsa0gj",
+     "provider": "faux",
+     "model": "faux-1",
+     "usage": {
+      "input": 14,
+      "output": 21,
+      "cacheRead": 1551,
+      "cacheWrite": 14,
+      "totalTokens": 1600,
+      "cost": {
+       "input": 0,
+       "output": 0,
+       "cacheRead": 0,
+       "cacheWrite": 0,
+       "total": 0
+      }
+     },
+     "stopReason": "toolUse",
+     "timestamp": 1790121756889
+    }
+   },
+   {
+    "type": "message",
+    "id": "57127ade",
+    "parentId": "c9604765",
+    "timestamp": "2026-09-23T00:02:36.974Z",
+    "message": {
+     "role": "toolResult",
+     "toolCallId": "tool:1790121756889:sa9vt5v1r5o",
+     "toolName": "bash",
+     "content": [
+      {
+       "type": "text",
+       "text": "probe-tool-output\n"
+      }
+     ],
+     "isError": false,
+     "timestamp": 1790121756973
+    }
+   },
+   {
+    "type": "message",
+    "id": "c85e0139",
+    "parentId": "57127ade",
+    "timestamp": "2026-09-23T00:02:36.989Z",
+    "message": {
+     "role": "assistant",
+     "content": [
+      {
+       "type": "text",
+       "text": "Tool finished. Done."
+      }
+     ],
+     "api": "faux:1790121755598:5q9maxsa0gj",
+     "provider": "faux",
+     "model": "faux-1",
+     "usage": {
+      "input": 33,
+      "output": 5,
+      "cacheRead": 1565,
+      "cacheWrite": 33,
+      "totalTokens": 1636,
+      "cost": {
+       "input": 0,
+       "output": 0,
+       "cacheRead": 0,
+       "cacheWrite": 0,
+       "total": 0
+      }
+     },
+     "stopReason": "stop",
+     "timestamp": 1790121756975
+    }
+   }
+  ]
+ },
+ "fileRowBytes": {
+  "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-35-581Z_5c258f17-45f0-4195-bcad-d2b3ba39462b.jsonl": [
+   210,
+   132,
+   132,
+   6282,
+   203,
+   639,
+   291,
+   458,
+   202,
+   638,
+   291,
+   458
+  ]
+ }
+}

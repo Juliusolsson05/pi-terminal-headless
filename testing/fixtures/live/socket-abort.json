@@ -1,0 +1,1176 @@
+{
+ "meta": {
+  "recordedWith": "0.87.1",
+  "scenario": "socket-abort",
+  "recordedAt": "2026-09-23",
+  "node": "v24.14.1",
+  "platform": "darwin-arm64",
+  "terminal": "@xterm/headless",
+  "cols": 100,
+  "rows": 30
+ },
+ "sessionIdLaunched": "d382afee-d08c-4333-82c5-132c7800ef23",
+ "notes": [],
+ "steps": [
+  {
+   "t": 18,
+   "action": "spawn",
+   "detail": {
+    "process": 1,
+    "args": [
+     "--provider",
+     "faux",
+     "--model",
+     "faux-1",
+     "-e",
+     "<scripts>/probe/faux.ts",
+     "-e",
+     "<scripts>/probe/recorder.ts",
+     "--session-id",
+     "d382afee-d08c-4333-82c5-132c7800ef23"
+    ]
+   }
+  },
+  {
+   "t": 354,
+   "action": "waited",
+   "detail": {
+    "label": "session_start #1"
+   }
+  },
+  {
+   "t": 1015,
+   "action": "type",
+   "detail": {
+    "text": "first"
+   }
+  },
+  {
+   "t": 1015,
+   "action": "key",
+   "detail": {
+    "name": "enter"
+   }
+  },
+  {
+   "t": 1067,
+   "action": "waited",
+   "detail": {
+    "label": "agent_settled #1"
+   }
+  },
+  {
+   "t": 1372,
+   "action": "type",
+   "detail": {
+    "text": "long [slow]"
+   }
+  },
+  {
+   "t": 1372,
+   "action": "key",
+   "detail": {
+    "name": "enter"
+   }
+  },
+  {
+   "t": 1397,
+   "action": "waited",
+   "detail": {
+    "label": "streaming"
+   }
+  },
+  {
+   "t": 1397,
+   "action": "socket",
+   "detail": {
+    "op": "abort",
+    "tag": "c8"
+   }
+  },
+  {
+   "t": 1423,
+   "action": "waited",
+   "detail": {
+    "label": "agent_settled #2"
+   }
+  },
+  {
+   "t": 1727,
+   "action": "key",
+   "detail": {
+    "name": "ctrl-d"
+   }
+  },
+  {
+   "t": 1804,
+   "action": "waited",
+   "detail": {
+    "label": "exit after ctrl-d"
+   }
+  }
+ ],
+ "events": [
+  {
+   "t": 339,
+   "name": "session_start",
+   "idle": true,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "e2013ab6",
+   "fileBytes": -1,
+   "keys": [
+    "reason",
+    "type"
+   ],
+   "reason": "startup"
+  },
+  {
+   "t": 339,
+   "name": "resources_discover",
+   "idle": true,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "e2013ab6",
+   "fileBytes": -1,
+   "keys": [
+    "cwd",
+    "reason",
+    "type"
+   ],
+   "cwd": "/sandbox/project",
+   "reason": "startup"
+  },
+  {
+   "t": 1022,
+   "name": "input",
+   "idle": true,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "e2013ab6",
+   "fileBytes": -1,
+   "keys": [
+    "images",
+    "source",
+    "streamingBehavior",
+    "text",
+    "type"
+   ],
+   "source": "interactive",
+   "textLength": 5,
+   "probeTag": null
+  },
+  {
+   "t": 1023,
+   "name": "before_agent_start",
+   "idle": true,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "e2013ab6",
+   "fileBytes": -1,
+   "keys": [
+    "images",
+    "prompt",
+    "systemPrompt",
+    "systemPromptOptions",
+    "type"
+   ],
+   "prompt": "first"
+  },
+  {
+   "t": 1024,
+   "name": "agent_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "e2013ab6",
+   "fileBytes": -1,
+   "keys": [
+    "type"
+   ]
+  },
+  {
+   "t": 1024,
+   "name": "turn_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "e2013ab6",
+   "fileBytes": -1,
+   "keys": [
+    "timestamp",
+    "turnIndex",
+    "type"
+   ],
+   "turnIndex": 0,
+   "timestamp": 1790121778877
+  },
+  {
+   "t": 1025,
+   "name": "message_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "e2013ab6",
+   "fileBytes": -1,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "system",
+    "contentTypes": "string",
+    "timestamp": 1790121778876
+   }
+  },
+  {
+   "t": 1025,
+   "name": "message_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "e2013ab6",
+   "fileBytes": -1,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "system",
+    "contentTypes": "string",
+    "timestamp": 1790121778876
+   }
+  },
+  {
+   "t": 1025,
+   "name": "message_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "ae7892d0",
+   "fileBytes": -1,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "user",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121778876
+   }
+  },
+  {
+   "t": 1026,
+   "name": "message_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "ae7892d0",
+   "fileBytes": -1,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "user",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121778876
+   }
+  },
+  {
+   "t": 1028,
+   "name": "message_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "4e021a18",
+   "fileBytes": -1,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "assistant",
+    "stopReason": "pending",
+    "contentTypes": [],
+    "toolCallIds": [],
+    "timestamp": 1790121778881
+   }
+  },
+  {
+   "t": 1028,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "4e021a18",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_start"
+  },
+  {
+   "t": 1035,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "4e021a18",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_delta"
+  },
+  {
+   "t": 1050,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "4e021a18",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_delta"
+  },
+  {
+   "t": 1052,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "4e021a18",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_delta"
+  },
+  {
+   "t": 1052,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "4e021a18",
+   "fileBytes": -1,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_end"
+  },
+  {
+   "t": 1053,
+   "name": "message_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "4e021a18",
+   "fileBytes": -1,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "assistant",
+    "stopReason": "stop",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121778881
+   }
+  },
+  {
+   "t": 1054,
+   "name": "turn_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "bd84df59",
+   "fileBytes": 7432,
+   "keys": [
+    "context",
+    "continue",
+    "entries",
+    "message",
+    "messageEntryId",
+    "outcome",
+    "toolResultEntryIds",
+    "toolResults",
+    "turnIndex",
+    "type"
+   ],
+   "turnIndex": 0,
+   "messageEntryId": "bd84df59",
+   "toolResultEntryIds": [],
+   "message": {
+    "role": "assistant",
+    "stopReason": "stop",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121778881
+   }
+  },
+  {
+   "t": 1054,
+   "name": "agent_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "bd84df59",
+   "fileBytes": 7432,
+   "keys": [
+    "messages",
+    "type"
+   ],
+   "messageCount": 3
+  },
+  {
+   "t": 1054,
+   "name": "agent_before_settle",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "bd84df59",
+   "fileBytes": 7432,
+   "keys": [
+    "context",
+    "continue",
+    "entries",
+    "outcome",
+    "type"
+   ],
+   "outcome": "completed",
+   "continue": false
+  },
+  {
+   "t": 1054,
+   "name": "agent_settled",
+   "idle": true,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "bd84df59",
+   "fileBytes": 7432,
+   "keys": [
+    "type"
+   ]
+  },
+  {
+   "t": 1374,
+   "name": "input",
+   "idle": true,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "bd84df59",
+   "fileBytes": 7432,
+   "keys": [
+    "images",
+    "source",
+    "streamingBehavior",
+    "text",
+    "type"
+   ],
+   "source": "interactive",
+   "textLength": 11,
+   "probeTag": null
+  },
+  {
+   "t": 1374,
+   "name": "before_agent_start",
+   "idle": true,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "bd84df59",
+   "fileBytes": 7432,
+   "keys": [
+    "images",
+    "prompt",
+    "systemPrompt",
+    "systemPromptOptions",
+    "type"
+   ],
+   "prompt": "long [slow]"
+  },
+  {
+   "t": 1375,
+   "name": "agent_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "bd84df59",
+   "fileBytes": 7432,
+   "keys": [
+    "type"
+   ]
+  },
+  {
+   "t": 1375,
+   "name": "turn_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "bd84df59",
+   "fileBytes": 7432,
+   "keys": [
+    "timestamp",
+    "turnIndex",
+    "type"
+   ],
+   "turnIndex": 0,
+   "timestamp": 1790121779228
+  },
+  {
+   "t": 1375,
+   "name": "message_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "bd84df59",
+   "fileBytes": 7432,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "user",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121779227
+   }
+  },
+  {
+   "t": 1375,
+   "name": "message_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "bd84df59",
+   "fileBytes": 7432,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "user",
+    "contentTypes": [
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121779227
+   }
+  },
+  {
+   "t": 1376,
+   "name": "message_start",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "dcbc4381",
+   "fileBytes": 7629,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "assistant",
+    "stopReason": "pending",
+    "contentTypes": [],
+    "toolCallIds": [],
+    "timestamp": 1790121779229
+   }
+  },
+  {
+   "t": 1376,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "dcbc4381",
+   "fileBytes": 7629,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "thinking_start"
+  },
+  {
+   "t": 1388,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "dcbc4381",
+   "fileBytes": 7629,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "thinking_delta"
+  },
+  {
+   "t": 1388,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "dcbc4381",
+   "fileBytes": 7629,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "thinking_end"
+  },
+  {
+   "t": 1388,
+   "name": "message_update",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "dcbc4381",
+   "fileBytes": 7629,
+   "keys": [
+    "assistantMessageEvent",
+    "message",
+    "type"
+   ],
+   "ame": "text_start"
+  },
+  {
+   "t": 1398,
+   "name": "probe_command",
+   "op": "abort",
+   "tag": "c8",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "dcbc4381",
+   "fileBytes": 7629
+  },
+  {
+   "t": 1398,
+   "name": "probe_command_ok",
+   "op": "abort",
+   "tag": "c8",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "dcbc4381",
+   "fileBytes": 7629
+  },
+  {
+   "t": 1398,
+   "name": "message_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "dcbc4381",
+   "fileBytes": 7629,
+   "keys": [
+    "message",
+    "type"
+   ],
+   "message": {
+    "role": "assistant",
+    "stopReason": "aborted",
+    "errorMessage": "Request was aborted",
+    "contentTypes": [
+     "thinking",
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121779251
+   }
+  },
+  {
+   "t": 1398,
+   "name": "turn_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "7c03addb",
+   "fileBytes": 8158,
+   "keys": [
+    "context",
+    "continue",
+    "entries",
+    "message",
+    "messageEntryId",
+    "outcome",
+    "toolResultEntryIds",
+    "toolResults",
+    "turnIndex",
+    "type"
+   ],
+   "turnIndex": 0,
+   "messageEntryId": "7c03addb",
+   "toolResultEntryIds": [],
+   "message": {
+    "role": "assistant",
+    "stopReason": "aborted",
+    "errorMessage": "Operation aborted",
+    "contentTypes": [
+     "thinking",
+     "text"
+    ],
+    "toolCallIds": [],
+    "timestamp": 1790121779251
+   }
+  },
+  {
+   "t": 1399,
+   "name": "agent_end",
+   "idle": false,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "7c03addb",
+   "fileBytes": 8158,
+   "keys": [
+    "messages",
+    "type"
+   ],
+   "messageCount": 2
+  },
+  {
+   "t": 1399,
+   "name": "agent_settled",
+   "idle": true,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "7c03addb",
+   "fileBytes": 8158,
+   "keys": [
+    "type"
+   ]
+  },
+  {
+   "t": 1782,
+   "name": "session_shutdown",
+   "idle": true,
+   "pending": false,
+   "sessionId": "d382afee-d08c-4333-82c5-132c7800ef23",
+   "sessionFile": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "leafId": "7c03addb",
+   "fileBytes": 8158,
+   "keys": [
+    "reason",
+    "type"
+   ],
+   "reason": "quit"
+  }
+ ],
+ "growth": [
+  {
+   "t": 1062,
+   "file": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "bytes": 7432
+  },
+  {
+   "t": 1385,
+   "file": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "bytes": 7629
+  },
+  {
+   "t": 1406,
+   "file": "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl",
+   "bytes": 8158
+  }
+ ],
+ "exits": [
+  {
+   "t": 1787,
+   "process": 1,
+   "exitCode": 0,
+   "signal": 0
+  }
+ ],
+ "pty": {
+  "chunks": 37,
+  "bytes": 8959,
+  "da1HandAnswered": 0,
+  "screen": [
+   "Warning: No project session found with id 'd382afee-d08c-4333-82c5-132c7800ef23'; creating a new ses",
+   "sion with that id.",
+   "",
+   " pi v0.87.1                                                                                         ",
+   " escape interrupt · ctrl+c/ctrl+d clear/exit · / commands · ! bash · ctrl+o more                    ",
+   " Press ctrl+o to show full startup help and loaded resources.                                       ",
+   "                                                                                                    ",
+   " Pi can explain its own features and look up its docs. Ask it how to use or extend Pi.              ",
+   "",
+   "[Extensions]                                                                                        ",
+   "  faux.ts, recorder.ts                                                                              ",
+   "",
+   "",
+   " Warning: fd not found. Offline mode enabled, skipping download.                                    ",
+   "",
+   "                                                                                                    ",
+   " first                                                                                              ",
+   "                                                                                                    ",
+   "",
+   " Reply to a 5-character prompt.                                                                     ",
+   "",
+   "                                                                                                    ",
+   " long [slow]                                                                                        ",
+   "                                                                                                    ",
+   "",
+   " Thinking slowly.                                                                                   ",
+   "",
+   " Operation aborted                                                                                  ",
+   "",
+   "────────────────────────────────────────────────────────────────────────────────────────────────────",
+   "                                                                                                    ",
+   "────────────────────────────────────────────────────────────────────────────────────────────────────",
+   "/sandbox/project (...",
+   "↑1.5k ↓1.5k R1.5k W1.5k CH98.1% 2.4%/128k (auto)                                              faux-1",
+   "To resume this session: pi --session d382afee-d08c-4333-82c5-132c7800ef23"
+  ]
+ },
+ "files": {
+  "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl": [
+   {
+    "type": "session",
+    "version": 3,
+    "id": "d382afee-d08c-4333-82c5-132c7800ef23",
+    "timestamp": "2026-09-23T00:02:58.043Z",
+    "cwd": "/sandbox/project"
+   },
+   {
+    "type": "model_change",
+    "id": "0a2c57ee",
+    "parentId": null,
+    "timestamp": "2026-09-23T00:02:58.070Z",
+    "provider": "faux",
+    "modelId": "faux-1"
+   },
+   {
+    "type": "thinking_level_change",
+    "id": "e2013ab6",
+    "parentId": "0a2c57ee",
+    "timestamp": "2026-09-23T00:02:58.070Z",
+    "thinkingLevel": "off"
+   },
+   {
+    "type": "message",
+    "id": "ae7892d0",
+    "parentId": "e2013ab6",
+    "timestamp": "2026-09-23T00:02:58.878Z",
+    "message": {
+     "role": "system",
+     "content": "<text:0>",
+     "sections": {
+      "preamble": "<text:169>",
+      "tools": "<text:339>",
+      "rules": "<text:839>",
+      "docs": "<text:1592>",
+      "cwd": "<text:108>"
+     },
+     "timestamp": 1790121778876,
+     "toolsAdded": [
+      {
+       "name": "read",
+       "description": "Read the contents of a file. Supports text files and images (jpg, png, gif, webp, bmp). Images are sent as attachments. For text files, output is truncated to 2000 lines or 50KB (whichever is hit first). Use offset/limit for large files. When you need the full file, continue with offset until complete.",
+       "parameters": {
+        "type": "object",
+        "required": [
+         "path"
+        ],
+        "properties": {
+         "path": {
+          "type": "string",
+          "description": "Path to the file to read (relative or absolute)"
+         },
+         "offset": {
+          "type": "number",
+          "description": "Line number to start reading from (1-indexed)"
+         },
+         "limit": {
+          "type": "number",
+          "description": "Maximum number of lines to read"
+         }
+        }
+       },
+       "constrainedSampling": {
+        "type": "json_schema",
+        "strict": "prefer"
+       }
+      },
+      {
+       "name": "bash",
+       "description": "Execute a bash command in the current working directory. Returns stdout and stderr. Output is truncated to last 2000 lines or 50KB (whichever is hit first). If truncated, full output is saved to a temp file. Optionally provide a timeout in seconds.",
+       "parameters": {
+        "type": "object",
+        "required": [
+         "command"
+        ],
+        "properties": {
+         "command": {
+          "type": "string",
+          "description": "Shell command to execute"
+         },
+         "timeout": {
+          "type": "number",
+          "description": "Timeout in seconds (optional, no default timeout)"
+         }
+        }
+       },
+       "constrainedSampling": {
+        "type": "json_schema",
+        "strict": "prefer"
+       }
+      },
+      {
+       "name": "edit",
+       "description": "Edit a single file using exact text replacement. Every edits[].oldText must match a unique, non-overlapping region of the original file. If two changes affect the same block or nearby lines, merge them into one edit instead of emitting overlapping edits. Do not include large unchanged regions just to connect distant changes.",
+       "parameters": {
+        "type": "object",
+        "required": [
+         "path",
+         "edits"
+        ],
+        "properties": {
+         "path": {
+          "type": "string",
+          "description": "Path to the file to edit (relative or absolute)"
+         },
+         "edits": {
+          "type": "array",
+          "items": {
+           "type": "object",
+           "required": [
+            "oldText",
+            "newText"
+           ],
+           "properties": {
+            "oldText": {
+             "type": "string",
+             "description": "Exact text for one targeted replacement. It must be unique in the original file and must not overlap with any other edits[].oldText in the same call."
+            },
+            "newText": {
+             "type": "string",
+             "description": "Replacement text for this targeted edit."
+            }
+           }
+          },
+          "description": "One or more targeted replacements. Each edit is matched against the original file, not incrementally. Do not include overlapping or nested edits. If two changes touch the same block or nearby lines, merge them into one edit instead."
+         }
+        }
+       },
+       "constrainedSampling": {
+        "type": "json_schema",
+        "strict": "prefer"
+       }
+      },
+      {
+       "name": "write",
+       "description": "Write content to a file. Creates the file if it doesn't exist, overwrites if it does. Automatically creates parent directories.",
+       "parameters": {
+        "type": "object",
+        "required": [
+         "path",
+         "content"
+        ],
+        "properties": {
+         "path": {
+          "type": "string",
+          "description": "Path to the file to write (relative or absolute)"
+         },
+         "content": {
+          "type": "string",
+          "description": "Content to write to the file"
+         }
+        }
+       },
+       "constrainedSampling": {
+        "type": "json_schema",
+        "strict": "prefer"
+       }
+      }
+     ]
+    }
+   },
+   {
+    "type": "message",
+    "id": "4e021a18",
+    "parentId": "ae7892d0",
+    "timestamp": "2026-09-23T00:02:58.879Z",
+    "message": {
+     "role": "user",
+     "content": [
+      {
+       "type": "text",
+       "text": "first"
+      }
+     ],
+     "timestamp": 1790121778876
+    }
+   },
+   {
+    "type": "message",
+    "id": "bd84df59",
+    "parentId": "4e021a18",
+    "timestamp": "2026-09-23T00:02:58.906Z",
+    "message": {
+     "role": "assistant",
+     "content": [
+      {
+       "type": "text",
+       "text": "Reply to a 5-character prompt."
+      }
+     ],
+     "api": "faux:1790121778060:4tlj1c9awyp",
+     "provider": "faux",
+     "model": "faux-1",
+     "usage": {
+      "input": 1517,
+      "output": 8,
+      "cacheRead": 0,
+      "cacheWrite": 1517,
+      "totalTokens": 3042,
+      "cost": {
+       "input": 0,
+       "output": 0,
+       "cacheRead": 0,
+       "cacheWrite": 0,
+       "total": 0
+      }
+     },
+     "stopReason": "stop",
+     "timestamp": 1790121778881
+    }
+   },
+   {
+    "type": "message",
+    "id": "dcbc4381",
+    "parentId": "bd84df59",
+    "timestamp": "2026-09-23T00:02:59.229Z",
+    "message": {
+     "role": "user",
+     "content": [
+      {
+       "type": "text",
+       "text": "long [slow]"
+      }
+     ],
+     "timestamp": 1790121779227
+    }
+   },
+   {
+    "type": "message",
+    "id": "7c03addb",
+    "parentId": "dcbc4381",
+    "timestamp": "2026-09-23T00:02:59.251Z",
+    "message": {
+     "role": "assistant",
+     "content": [
+      {
+       "type": "thinking",
+       "thinking": "Thinking slowly."
+      },
+      {
+       "type": "text",
+       "text": ""
+      }
+     ],
+     "api": "faux:1790121778060:4tlj1c9awyp",
+     "provider": "faux",
+     "model": "faux-1",
+     "usage": {
+      "input": 15,
+      "output": 1505,
+      "cacheRead": 1517,
+      "cacheWrite": 15,
+      "totalTokens": 3052,
+      "cost": {
+       "input": 0,
+       "output": 0,
+       "cacheRead": 0,
+       "cacheWrite": 0,
+       "total": 0
+      }
+     },
+     "stopReason": "aborted",
+     "timestamp": 1790121779251,
+     "errorMessage": "Operation aborted"
+    }
+   }
+  ]
+ },
+ "fileRowBytes": {
+  "/sandbox/agent/sessions/--sandbox-project--/2026-09-23T00-02-58-043Z_d382afee-d08c-4333-82c5-132c7800ef23.jsonl": [
+   218,
+   132,
+   132,
+   6290,
+   191,
+   469,
+   197,
+   529
+  ]
+ }
+}
