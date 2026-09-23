@@ -44,7 +44,8 @@ describe('preparePiTerminalLaunch', () => {
     const h = home()
     const dir = await resolvePiSessionDir({ env: {}, homeDirectory: h, cwd: '/w/p' })
     mkdirSync(dir, { recursive: true })
-    writeFileSync(join(dir, '2026-01-01T00-00-00-000Z_id-2.jsonl'), '')
+    // A header row: Pi (and so the lookup) identifies a session by it, not by the name.
+    writeFileSync(join(dir, '2026-01-01T00-00-00-000Z_id-2.jsonl'), JSON.stringify({ type: 'session', version: 3, id: 'id-2', timestamp: '2026-01-01T00:00:00.000Z', cwd: '/w/p' }) + '\n')
     const launch = await preparePiTerminalLaunch({ binary: 'pi', cwd: '/w/p', env: {}, sessionId: 'id-2', bridgeScriptPath: '/b', homeDirectory: h })
     await launch.dispose()
     expect(launch.existingFile).toBe(join(dir, '2026-01-01T00-00-00-000Z_id-2.jsonl'))
