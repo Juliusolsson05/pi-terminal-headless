@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto'
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs'
-import { connect } from 'node:net'
-import { join } from 'node:path'
+import { connect, createServer, type Socket } from 'node:net'
+import { join, resolve } from 'node:path'
 
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
@@ -305,5 +305,77 @@ describe('host admission', () => {
     // Rule 3: no runtime import other than node builtins.
     const runtimeImports = [...source.matchAll(/^import (?!type )[^\n]* from '([^']+)'/gm)].map(m => m[1])
     expect(runtimeImports.every(specifier => specifier!.startsWith('node:'))).toBe(true)
+  })
+})
+
+// A frame split inside a multibyte character, and a host that is stopping
+// while a peer is still saying hello (Astra review, findings 5, 7 and 9).
+describe('bytes and shutdown at the socket boundary', () => {
+  const globe = '🌍'
+  const splitInside = (line: string): [Buffer, Buffer] => {
+    const bytes = Buffer.from(line, 'utf8')
+    const cut = bytes.indexOf(Buffer.from(globe, 'utf8')) + 1
+    return [bytes.subarray(0, cut), bytes.subarray(cut)]
+  }
+  const pause = () => new Promise(r => setTimeout(r, 30))
+
+  it('host: an event frame split inside a UTF-8 character arrives intact', async () => {
+    const socket = connect(socketPath)
+    socket.on('error', () => undefined)
+    await new Promise<void>(r => socket.on('connect', () => r()))
+    socket.write(JSON.stringify({ t: 'hello', token, protocol: BRIDGE_PROTOCOL_VERSION, pid: 1 }) + '\n')
+    await until(() => server.isConnected())
+    const [head, rest] = splitInside(JSON.stringify({ t: 'event', at: 1, event: { name: 'session_info', title: `trip ${globe}` } }) + '\n')
+    socket.write(head)
+    await pause()
+    socket.write(rest)
+    await until(() => events.length > 0)
+    expect(events[0]).toMatchObject({ name: 'session_info', title: `trip ${globe}` })
+    socket.destroy()
+  })
+
+  it('extension: a prompt frame split inside a UTF-8 character reaches pi intact', async () => {
+    // A raw host, so the test controls where the bytes are cut.
+    const rawPath = join(dir, 'raw')
+    let hostSide: Socket | undefined
+    const raw = createServer(socket => { hostSide = socket })
+    await new Promise<void>(r => raw.listen(rawPath, () => r()))
+    try {
+      process.env[BRIDGE_SOCKET_ENV] = rawPath
+      const pi = new FakePi()
+      agentCodeBridge(pi)
+      pi.fire('session_start', { reason: 'startup' }, fakeCtx())
+      await until(() => hostSide !== undefined)
+      const [head, rest] = splitInside(JSON.stringify({ t: 'request', id: 1, op: 'prompt', text: `hello ${globe}` }) + '\n')
+      hostSide!.write(head)
+      await pause()
+      hostSide!.write(rest)
+      await until(() => pi.sent.length > 0)
+      expect(pi.sent[0]!.text).toBe(`hello ${globe}`)
+    } finally {
+      hostSide?.destroy()
+      await new Promise<void>(r => raw.close(() => r()))
+    }
+  })
+
+  it('extension: a relative session file is reported absolute, resolved against pi\'s own cwd', async () => {
+    const pi = new FakePi()
+    await started(pi, fakeCtx({ file: 'sessions/2026_x.jsonl' }))
+    expect(events[0]).toMatchObject({ name: 'session_start', file: resolve(process.cwd(), 'sessions/2026_x.jsonl') })
+  })
+
+  it('host: close() resolves even when a pending connection finishes its hello after close began', async () => {
+    const socket = connect(socketPath)
+    socket.on('error', () => undefined)
+    const socketClosed = new Promise<void>(r => socket.on('close', () => r()))
+    await new Promise<void>(r => socket.on('connect', () => r()))
+    await pause() // the server has accepted it; no hello yet
+    const closing = server.close()
+    socket.write(JSON.stringify({ t: 'hello', token, protocol: BRIDGE_PROTOCOL_VERSION, pid: 1 }) + '\n')
+    const outcome = await Promise.race([closing.then(() => 'closed'), new Promise(r => setTimeout(() => r('hung'), 1_500))])
+    expect(outcome).toBe('closed')
+    await socketClosed
+    expect(server.isConnected()).toBe(false)
+    socket.destroy()
   })
 })

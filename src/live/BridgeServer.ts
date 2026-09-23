@@ -16,6 +16,7 @@
 import { EventEmitter } from 'node:events'
 import { rm } from 'node:fs/promises'
 import { createServer, type Server, type Socket } from 'node:net'
+import { StringDecoder } from 'node:string_decoder'
 
 import { BRIDGE_PROTOCOL_VERSION, type BridgeEvent, type BridgeRequest, type BridgeState, type PromptOutcome } from '../bridge/protocol.js'
 
@@ -42,6 +43,13 @@ const HELLO_DEADLINE_MS = 5_000
 export class BridgeServer extends EventEmitter<BridgeServerEvents> {
   private server: Server | undefined
   private peer: Socket | undefined
+  // EVERY accepted socket, not just the authenticated peer. WHY: server.close()
+  // only calls back once all connections have ended, and the host awaits this
+  // close() BEFORE it kills pi (the app's stop order). A connection accepted
+  // before close() that finished its hello afterwards used to be admitted as
+  // the new peer — its hello timer cleared, nobody left to destroy it — so
+  // close() never resolved and neither side let go (Astra review, finding 7).
+  private readonly sockets = new Set<Socket>()
   private nextId = 1
   private readonly pending = new Map<number, Pending>()
   private closed = false
@@ -92,7 +100,8 @@ export class BridgeServer extends EventEmitter<BridgeServerEvents> {
     if (this.closed) return
     this.closed = true
     this.failPending(new BridgeRequestError('closed', 'bridge server closed'))
-    this.peer?.destroy()
+    for (const socket of this.sockets) socket.destroy()
+    this.sockets.clear()
     this.peer = undefined
     // close() on a server that never finished listening still calls back
     // (with ERR_SERVER_NOT_RUNNING), so this cannot hang.
@@ -119,14 +128,32 @@ export class BridgeServer extends EventEmitter<BridgeServerEvents> {
 
   private admit(socket: Socket): void {
     socket.on('error', () => undefined)
+    // A connection that lands after close() began is never ours to keep.
+    if (this.closed) {
+      socket.destroy()
+      return
+    }
+    this.sockets.add(socket)
     let authenticated = false
     let buffer = ''
+    // WHY a decoder per connection: a frame's bytes can arrive split anywhere,
+    // including inside a multibyte character. `chunk.toString('utf8')` turns
+    // each half into U+FFFD, the JSON still parses, and a path or title is
+    // silently corrupted (Astra review, finding 9). The decoder carries the
+    // incomplete tail into the next chunk.
+    const decoder = new StringDecoder('utf8')
     const helloTimer = setTimeout(() => {
       if (!authenticated) this.refuse(socket, 'no hello')
     }, HELLO_DEADLINE_MS)
     helloTimer.unref?.()
     socket.on('data', data => {
-      buffer += data.toString('utf8')
+      // Frames still in flight when close() started are dropped with the
+      // socket; admitting a hello now would resurrect a peer nobody closes.
+      if (this.closed) {
+        socket.destroy()
+        return
+      }
+      buffer += decoder.write(data)
       let newline: number
       while ((newline = buffer.indexOf('\n')) >= 0) {
         const line = buffer.slice(0, newline)
@@ -160,6 +187,7 @@ export class BridgeServer extends EventEmitter<BridgeServerEvents> {
     })
     socket.on('close', () => {
       clearTimeout(helloTimer)
+      this.sockets.delete(socket)
       if (this.peer !== socket) return
       this.peer = undefined
       this.failPending(new BridgeRequestError('closed', 'the Pi bridge disconnected'))

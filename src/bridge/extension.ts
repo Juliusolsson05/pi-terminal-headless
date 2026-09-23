@@ -30,6 +30,8 @@
 // recordings (research/census-2026-09-22.md in pi-terminal-headless).
 
 import { connect, type Socket } from 'node:net'
+import { resolve as resolvePath } from 'node:path'
+import { StringDecoder } from 'node:string_decoder'
 
 import type { BridgeEvent, BridgeRequest, ExtensionFrame, PromptOutcome } from './protocol.js'
 
@@ -75,6 +77,11 @@ class HostLink {
   private attempt = 0
   private queue: string[] = []
   private buffer = ''
+  // Per connection (reset with `buffer` on close). WHY: the host's request
+  // frames carry user prompt text, and a socket chunk can end inside a
+  // multibyte character; decoding each chunk alone turns 🌍 into four U+FFFD
+  // and Pi runs an altered prompt (Astra review, finding 9).
+  private decoder = new StringDecoder('utf8')
 
   constructor(
     private readonly socketPath: string,
@@ -115,6 +122,7 @@ class HostLink {
       this.connecting = false
       this.socket = undefined
       this.buffer = ''
+      this.decoder = new StringDecoder('utf8')
       if (!this.closing) this.scheduleReconnect()
     }))
   }
@@ -145,7 +153,7 @@ class HostLink {
   }
 
   private receive(data: Buffer): void {
-    this.buffer += data.toString('utf8')
+    this.buffer += this.decoder.write(data)
     let newline: number
     while ((newline = this.buffer.indexOf('\n')) >= 0) {
       const line = this.buffer.slice(0, newline)
@@ -547,11 +555,20 @@ function ensureMcp(state: BridgeState): Promise<McpDiscovery> | undefined {
   return state.mcp
 }
 
+function absoluteSessionFile(file: unknown): string {
+  const text = String(file ?? '')
+  return text ? resolvePath(text) : ''
+}
+
 function identity(c: AnyCtx): { sessionId: string; file: string; leafId: string | null } {
   const sm = c?.sessionManager
   return {
     sessionId: String(sm?.getSessionId?.() ?? ''),
-    file: String(sm?.getSessionFile?.() ?? ''),
+    // Absolute, resolved HERE, where process.cwd() is pi's own. Pi keeps a
+    // relative session dir relative (join(dir, name)), and the host — another
+    // process with another cwd — cannot resolve it correctly (Astra review,
+    // finding 5). '' stays '' (no file yet).
+    file: absoluteSessionFile(sm?.getSessionFile?.()),
     leafId: (sm?.getLeafId?.() ?? null) as string | null,
   }
 }
@@ -701,7 +718,7 @@ export default function agentCodeBridge(pi: AnyPi): void {
     emit(state, { name: 'session_start', reason: String(event?.reason ?? ''), ...(event?.previousSessionFile ? { previousSessionFile: String(event.previousSessionFile) } : {}), idle: Boolean(c?.isIdle?.() ?? true), ...identity(c) })
   })
   on('session_shutdown', event => {
-    emit(state, { name: 'session_shutdown', reason: String(event?.reason ?? ''), ...(event?.targetSessionFile ? { targetSessionFile: String(event.targetSessionFile) } : {}) })
+    emit(state, { name: 'session_shutdown', reason: String(event?.reason ?? ''), ...(event?.targetSessionFile ? { targetSessionFile: absoluteSessionFile(event.targetSessionFile) } : {}) })
     // Only the process quitting ends the link: /new, /resume, /fork and
     // /reload shut one runtime down and start another in the same process.
     if (event?.reason === 'quit') state.link.close()
