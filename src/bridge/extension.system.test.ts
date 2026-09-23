@@ -38,6 +38,7 @@ function fakeCtx(overrides: Partial<{ idle: boolean; pending: boolean; sessionId
   const state = { idle: true, pending: false, sessionId: 'sess-1', file: '/sandbox/s.jsonl', leafId: null as string | null, aborted: 0, compactions: [] as unknown[], ...overrides }
   return {
     state,
+    model: { id: 'faux-1' } as unknown,
     isIdle: () => state.idle,
     hasPendingMessages: () => state.pending,
     abort: () => { state.aborted += 1 },
@@ -162,6 +163,42 @@ describe('bridge extension ↔ host', () => {
     pi.sendImpl = text => pi.fire('message_start', { message: { role: 'user', content: text } }, ctx)
     await expect(server.prompt('/compactify the docs')).resolves.toEqual({ outcome: 'started' })
     expect(pi.sent.map(sent => sent.text)).toEqual(['/compactify the docs'])
+  })
+
+  it('a prompt Pi would refuse is rejected at once, never left to become "unknown"', async () => {
+    const pi = new FakePi()
+    const ctx = await started(pi)
+    // A compaction in progress: pi's prompt() throws before any event.
+    pi.fire('session_before_compact', { reason: 'manual' }, ctx)
+    await expect(server.prompt('during compaction')).rejects.toMatchObject({ code: 'rejected' })
+    pi.fire('session_compact', { compactionEntry: { id: 'c1' } }, ctx)
+    pi.sendImpl = text => pi.fire('message_start', { message: { role: 'user', content: text } }, ctx)
+    await expect(server.prompt('after compaction')).resolves.toEqual({ outcome: 'started' })
+    // No model selected.
+    ;(ctx as { model: unknown }).model = undefined
+    await expect(server.prompt('no model')).rejects.toMatchObject({ code: 'rejected' })
+    expect(pi.sent.map(sent => sent.text)).toEqual(['after compaction'])
+  })
+
+  it('a prompt counts as started at before_agent_start, even while a slow hook keeps message_start away', async () => {
+    const pi = new FakePi()
+    const ctx = await started(pi)
+    pi.sendImpl = text => setTimeout(() => {
+      pi.fire('input', { text, source: 'extension' }, ctx)
+      pi.fire('before_agent_start', { prompt: text, systemPrompt: '', systemPromptOptions: {} }, ctx)
+      // message_start never arrives within the deadline.
+    }, 5)
+    await expect(server.prompt('slow start')).resolves.toEqual({ outcome: 'started' })
+  })
+
+  it('a stale Pi context (between runtimes) answers the host with an error instead of silence', async () => {
+    const pi = new FakePi()
+    const ctx = await started(pi)
+    const stale = () => { throw new Error('This extension ctx is stale after session replacement') }
+    ;(ctx as Record<string, unknown>).isIdle = stale
+    ;(ctx as Record<string, unknown>).abort = stale
+    await expect(server.state(1000)).rejects.toMatchObject({ code: 'rejected' })
+    await expect(server.abort(1000)).rejects.toMatchObject({ code: 'rejected' })
   })
 
   it('prompt Pi silently drops (the Stage 0 H5 case): "unknown" after the evidence deadline, never ok', async () => {

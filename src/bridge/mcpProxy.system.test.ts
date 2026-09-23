@@ -3,7 +3,7 @@ import { mkdtempSync, rmSync } from 'node:fs'
 import { createServer, type IncomingMessage, type Server } from 'node:http'
 import { join } from 'node:path'
 
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { BridgeServer } from '../live/BridgeServer.js'
 import agentCodeBridge from './extension.js'
@@ -40,6 +40,7 @@ const ctx = { isIdle: () => true, hasPendingMessages: () => false, sessionManage
 
 type Call = { method: string; authorization?: string; protocolVersion?: string }
 let calls: Call[]
+let collide = false
 let mcp: Server
 let mcpUrl: string
 const BEARER = 'Bearer secret-token'
@@ -65,6 +66,7 @@ async function startMcp(): Promise<void> {
     if (message.method === 'initialize') return reply({ protocolVersion: '2025-03-26', capabilities: { tools: {} }, serverInfo: { name: 'agent_code', version: '1' }, instructions: 'Use goal_set to record your goal.' })
     if (message.method === 'tools/list') {
       // Two pages, as a paginating server would send them.
+      if (collide) return reply({ tools: [{ name: 'a.b', inputSchema: { type: 'object' } }, { name: 'a_b', inputSchema: { type: 'object' } }] })
       if (!message.params?.cursor) return reply({ tools: [{ name: 'echo', description: 'Echo text back.', inputSchema: { $schema: 'http://json-schema.org/draft-07/schema#', type: 'object', properties: { text: { type: 'string' } }, required: ['text'], additionalProperties: false } }], nextCursor: 'p2' })
       return reply({ tools: [{ name: 'fail', description: 'Always fails.', inputSchema: { type: 'object', properties: {} } }] })
     }
@@ -91,6 +93,7 @@ function configure(specs: McpServerLaunchSpec[], values: Record<string, string>)
 beforeEach(async () => {
   delete (globalThis as any)[STATE_KEY]
   calls = []
+  collide = false
   await startMcp()
   dir = mkdtempSync('/tmp/acpi-m-')
   const token = randomBytes(16).toString('hex')
@@ -182,6 +185,34 @@ describe('Agent Code MCP tools inside Pi', () => {
     second.fire('session_start', { reason: 'new' }, ctx)
     await new Promise(r => setTimeout(r, 30))
     expect(calls.length).toBe(discoveryCalls)
+  })
+
+  it('after /reload (pi re-evaluates this file: jiti moduleCache false) the re-registered tools still reach the server', async () => {
+    configure([{ name: 'agent_code', url: mcpUrl, headerEnv: { Authorization: 'AGENT_CODE_MCP_0_0' } }], { AGENT_CODE_MCP_0_0: BEARER })
+    const first = new FakePi()
+    agentCodeBridge(first)
+    first.fire('session_start', { reason: 'startup' }, ctx)
+    await until(() => first.tools.size === 2)
+    // A fresh evaluation of the module, as Pi's loader does on /reload.
+    vi.resetModules()
+    const reloaded = (await import('./extension.js')).default
+    expect(reloaded).not.toBe(agentCodeBridge)
+    const second = new FakePi()
+    reloaded(second)
+    await expect(second.tools.get('mcp__agent_code__echo').execute('call-3', { text: 'again' }, undefined)).resolves.toMatchObject({ content: [{ type: 'text', text: 'echo: again' }] })
+  })
+
+  it('tools whose names collide after sanitizing stay two distinct Pi tools', async () => {
+    collide = true
+    configure([{ name: 'agent_code', url: mcpUrl, headerEnv: { Authorization: 'AGENT_CODE_MCP_0_0' } }], { AGENT_CODE_MCP_0_0: BEARER })
+    const pi = new FakePi()
+    agentCodeBridge(pi)
+    pi.fire('session_start', { reason: 'startup' }, ctx)
+    await until(() => pi.tools.size === 2)
+    const names = [...pi.tools.keys()]
+    expect(names[0]).toBe('mcp__agent_code__a_b')
+    expect(names[1]).toMatch(/^mcp__agent_code__a_b_[0-9a-f]{8}$/)
+    expect(pi.tools.get(names[1]!).label).toBe('agent_code: a_b')
   })
 
   it('an unreachable or refusing server is reported, and a prompt still runs, without tools', async () => {

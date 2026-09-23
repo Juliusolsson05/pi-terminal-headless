@@ -65,6 +65,11 @@ export type BridgeEvent =
 
 export type EventFrame = { t: 'event'; at: number; event: BridgeEvent }
 
+/**
+ * A `queued` prompt is Pi's follow-up queue, and interactive pi's abort (Esc,
+ * or the host's `abort` op) moves that queue back into the TUI editor. After
+ * an abort, a `queued` prompt may never run unless the user submits it again.
+ */
 export type PromptOutcome =
   /** Pi started a run with our text as the user message. */
   | 'started'

@@ -253,6 +253,16 @@ function piToolName(server: string, tool: string): string {
   return `mcp__${clean(server)}__${clean(tool)}`.slice(0, TOOL_NAME_LIMIT)
 }
 
+/** 8 hex chars of FNV-1a: stable across processes, no crypto import needed. */
+function shortHash(value: string): string {
+  let hash = 0x811c9dc5
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index)
+    hash = Math.imul(hash, 0x01000193) >>> 0
+  }
+  return hash.toString(16).padStart(8, '0')
+}
+
 /** JSON-RPC messages from an SSE body: every `data:` payload that parses. */
 function sseMessages(body: string): any[] {
   const messages: any[] = []
@@ -322,16 +332,10 @@ class McpHttpClient {
   }
 }
 
-// The connected clients, by server name, that tool executions call through.
-// Module scope is the process scope here: Pi loads this file once per
-// process, and the singleton above already relies on that.
-let mcpClients = new Map<string, McpHttpClient>()
-
-async function discoverMcp(servers: McpServer[], report: (status: Array<{ name: string; tools: number; error?: string }>) => void): Promise<McpDiscovery> {
+async function discoverMcp(servers: McpServer[], clients: Map<string, McpHttpClient>, report: (status: Array<{ name: string; tools: number; error?: string }>) => void): Promise<McpDiscovery> {
   const signal = AbortSignal.timeout(MCP_DISCOVERY_TIMEOUT_MS)
   const discovery: McpDiscovery = { tools: [], instructions: [] }
   const status: Array<{ name: string; tools: number; error?: string }> = []
-  const clients = new Map<string, McpHttpClient>()
   await Promise.all(servers.map(async server => {
     try {
       const client = new McpHttpClient(server)
@@ -342,7 +346,7 @@ async function discoverMcp(servers: McpServer[], report: (status: Array<{ name: 
       for (const tool of tools) {
         if (!tool || typeof tool.name !== 'string') continue
         discovery.tools.push({
-          server, toolName: tool.name, piName: piToolName(server.name, tool.name),
+          server, toolName: tool.name, piName: '',
           description: typeof tool.description === 'string' ? tool.description : '',
           inputSchema: toolParameters(tool.inputSchema),
         })
@@ -352,7 +356,20 @@ async function discoverMcp(servers: McpServer[], report: (status: Array<{ name: 
       status.push({ name: server.name, tools: 0, error: String((error as Error)?.message ?? error) })
     }
   }))
-  mcpClients = clients
+  // Pi names must be unique: registerTool silently REPLACES a same-named
+  // tool, and the model would then call the wrong one. Sanitizing (`a.b` and
+  // `a_b`) and the 64-character cut can both collide, so a collision gets a
+  // short stable hash of its real server/tool identity.
+  const taken = new Set<string>()
+  for (const tool of discovery.tools) {
+    let name = piToolName(tool.server.name, tool.toolName)
+    if (taken.has(name)) {
+      const suffix = `_${shortHash(`${tool.server.name}/${tool.toolName}`)}`
+      name = name.slice(0, TOOL_NAME_LIMIT - suffix.length) + suffix
+    }
+    taken.add(name)
+    tool.piName = name
+  }
   report(status)
   return discovery
 }
@@ -394,7 +411,13 @@ function registerMcpTools(pi: AnyPi, discovery: McpDiscovery): void {
       description: tool.description,
       parameters: tool.inputSchema,
       async execute(_toolCallId: string, params: unknown, signal: AbortSignal | undefined) {
-        const client = mcpClients.get(tool.server.name)
+        // Looked up through the process-wide state, never a module variable:
+        // Pi loads extensions with jiti `moduleCache: false` and clears its
+        // extension cache on /reload (and on a /resume into another cwd), so
+        // this FILE is evaluated again while the globalThis state (and its
+        // discovered tools) survives. A module-scope map would be empty in
+        // the new copy, and every tool would fail as "not connected".
+        const client = currentBridgeState()?.mcpClients.get(tool.server.name)
         if (!client) throw new Error(`Agent Code MCP server ${tool.server.name} is not connected`)
         const result = await client.request('tools/call', { name: tool.toolName, arguments: params ?? {} }, signal)
         const content = toolContent(result)
@@ -435,6 +458,9 @@ type BridgeState = {
   lastPhase?: string
   deliveries: Delivery[]
   mcpServers: McpServer[]
+  mcpClients: Map<string, McpHttpClient>
+  /** Between session_before_compact and its outcome, Pi refuses every prompt. */
+  compacting: boolean
   /** Started at the first session_start, once per process; see ensureMcp. */
   mcp?: Promise<McpDiscovery>
   mcpResult?: McpDiscovery
@@ -443,6 +469,10 @@ type BridgeState = {
 const STATE_KEY = Symbol.for('agent-code.pi-bridge')
 /** Pi's TUI syntax: `/compact` plus optional free-text instructions. */
 const COMPACT_COMMAND = /^\/compact(?:\s+([\s\S]*?))?\s*$/
+
+function currentBridgeState(): BridgeState | undefined {
+  return (globalThis as unknown as Record<symbol, BridgeState | null | undefined>)[STATE_KEY] ?? undefined
+}
 
 function bridgeState(pi: AnyPi): BridgeState | undefined {
   const holder = globalThis as unknown as Record<symbol, BridgeState | null | undefined>
@@ -470,6 +500,8 @@ function bridgeState(pi: AnyPi): BridgeState | undefined {
     deliveries: [],
     link: undefined as unknown as HostLink,
     mcpServers: readMcpServers(),
+    mcpClients: new Map(),
+    compacting: false,
   }
   state.link = new HostLink(
     socketPath,
@@ -501,7 +533,7 @@ function bridgeState(pi: AnyPi): BridgeState | undefined {
  */
 function ensureMcp(state: BridgeState): Promise<McpDiscovery> | undefined {
   if (state.mcpServers.length === 0) return undefined
-  state.mcp ??= discoverMcp(state.mcpServers, servers => emit(state, { name: 'mcp_status', servers })).then(discovery => {
+  state.mcp ??= discoverMcp(state.mcpServers, state.mcpClients, servers => emit(state, { name: 'mcp_status', servers })).then(discovery => {
     state.mcpResult = discovery
     // The runtime that is current when discovery lands gets the tools. Pi
     // activates newly registered extension tools (agent-session.js
@@ -539,6 +571,18 @@ function settle(state: BridgeState, delivery: Delivery, outcome: PromptOutcome):
 }
 
 function handleRequest(state: BridgeState, id: number, request: BridgeRequest): void {
+  // Every op answers, even when Pi throws: between session_shutdown and the
+  // next session_start the cached ctx belongs to a replaced runtime, and its
+  // methods throw "stale". An unanswered request would make the host wait out
+  // its timeout and report `unknown`.
+  try {
+    handleRequestUnsafe(state, id, request)
+  } catch (error) {
+    reply(state, id, false, (error as Error)?.message ?? error)
+  }
+}
+
+function handleRequestUnsafe(state: BridgeState, id: number, request: BridgeRequest): void {
   const c = state.ctx
   if (request.op === 'state') {
     reply(state, id, true, {
@@ -549,6 +593,10 @@ function handleRequest(state: BridgeState, id: number, request: BridgeRequest): 
     return
   }
   if (request.op === 'abort') {
+    // NOTE (TUI behaviour, not ours): interactive pi implements ctx.abort as
+    // restoreQueuedMessagesToEditor({ abort: true }), so follow-ups already
+    // acknowledged as `queued` go back into the TUI editor instead of running.
+    // An abort therefore cancels queued host prompts too; see PromptOutcome.
     c?.abort?.()
     reply(state, id, true, { aborted: true })
     return
@@ -566,7 +614,21 @@ function handleRequest(state: BridgeState, id: number, request: BridgeRequest): 
     // including aborting a live run first. The durable evidence the host waits
     // for is the compaction row in the session file, so the acknowledgement is
     // simply "started".
+    // Pi REFUSES these before any event we could observe
+    // (agent-session.js prompt(): a running compaction throws before `input`,
+    // a missing model throws after it), and sendUserMessage returns void,
+    // so the refusal never reaches our catch. Without these checks the host
+    // would wait out the deadline and get `unknown` ("never resubmit") for a
+    // prompt that was simply refused.
+    if (state.compacting) {
+      reply(state, id, false, 'pi is compacting this session; retry when the compaction finishes')
+      return
+    }
     const compact = COMPACT_COMMAND.exec(text)
+    if (!compact && c && c.model === undefined) {
+      reply(state, id, false, 'pi has no model selected')
+      return
+    }
     if (compact && typeof c?.compact === 'function') {
       c.compact(compact[1] ? { customInstructions: compact[1] } : {})
       reply(state, id, true, { outcome: 'started' })
@@ -641,9 +703,18 @@ export default function agentCodeBridge(pi: AnyPi): void {
     oldLeafId: event?.oldLeafId ?? null,
     ...(event?.summaryEntry?.id ? { summaryEntryId: String(event.summaryEntry.id) } : {}),
   }))
-  on('session_before_compact', event => emit(state, { name: 'compaction_start', ...(event?.reason ? { reason: String(event.reason) } : {}) }))
-  on('session_compact', event => emit(state, { name: 'session_compact', ...(event?.compactionEntry?.id ? { compactionEntryId: String(event.compactionEntry.id) } : {}), fromExtension: Boolean(event?.fromExtension) }))
-  on('session_compact_failed', event => emit(state, { name: 'session_compact_failed', ...(event?.errorMessage ? { errorMessage: String(event.errorMessage) } : {}) }))
+  on('session_before_compact', event => {
+    state.compacting = true
+    emit(state, { name: 'compaction_start', ...(event?.reason ? { reason: String(event.reason) } : {}) })
+  })
+  on('session_compact', event => {
+    state.compacting = false
+    emit(state, { name: 'session_compact', ...(event?.compactionEntry?.id ? { compactionEntryId: String(event.compactionEntry.id) } : {}), fromExtension: Boolean(event?.fromExtension) })
+  })
+  on('session_compact_failed', event => {
+    state.compacting = false
+    emit(state, { name: 'session_compact_failed', ...(event?.errorMessage ? { errorMessage: String(event.errorMessage) } : {}) })
+  })
 
   // The first prompt must see the tools even when the user types before
   // discovery lands: wait for it here (bounded by the discovery timeout).
@@ -652,6 +723,16 @@ export default function agentCodeBridge(pi: AnyPi): void {
   // instructions go in their own prompt section, which composes with other
   // extensions, where returning a whole systemPrompt would overwrite them.
   guard(() => pi.on('before_agent_start', async (event: any) => {
+    // before_agent_start fires after every check that can refuse a prompt
+    // (compaction, model, auth; agent-session.js prompt()), so our text has
+    // started here. Settling now, instead of at message_start, keeps a slow
+    // step between the two (the MCP discovery wait below, up to 10 s, or
+    // pi's own pre-prompt compaction check) from turning a prompt that
+    // started into `unknown` at the 5 s evidence deadline.
+    guard(() => {
+      const delivery = state.deliveries.find(d => d.text === event?.prompt)
+      if (delivery) settle(state, delivery, 'started')
+    })
     try {
       const discovery = await ensureMcp(state)
       const section = discovery && mcpInstructionsSection(discovery)
