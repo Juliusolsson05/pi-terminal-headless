@@ -15,6 +15,14 @@
 export const BRIDGE_PROTOCOL_VERSION = 1
 export const BRIDGE_SOCKET_ENV = 'AGENT_CODE_PI_BRIDGE_SOCKET'
 export const BRIDGE_TOKEN_ENV = 'AGENT_CODE_PI_BRIDGE_TOKEN'
+/**
+ * JSON `[{ name, url, headerEnv: { <header>: <env var holding its value> } }]`:
+ * Agent Code's built-in MCP endpoints for this launch. Header values (the
+ * bearer) travel in their own env vars, and the bridge deletes all of them
+ * once read.
+ */
+export const MCP_SERVERS_ENV = 'AGENT_CODE_PI_MCP_SERVERS'
+export type McpServerLaunchSpec = { name: string; url: string; headerEnv: Record<string, string> }
 
 /** First frame on every connection. Anything else first ⇒ the host drops the peer. */
 export type HelloFrame = {
@@ -52,6 +60,8 @@ export type BridgeEvent =
   | { name: 'ui_prompt_start'; kind: string; title?: string }
   | { name: 'ui_prompt_end'; kind: string; title?: string }
   | { name: 'input'; source: string; streamingBehavior?: string }
+  /** Once per process: what MCP discovery found per server (an error instead of tools when it failed). */
+  | { name: 'mcp_status'; servers: Array<{ name: string; tools: number; error?: string }> }
 
 export type EventFrame = { t: 'event'; at: number; event: BridgeEvent }
 

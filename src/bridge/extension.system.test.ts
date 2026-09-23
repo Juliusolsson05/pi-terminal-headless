@@ -7,7 +7,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 import { BridgeServer, BridgeRequestError } from '../live/BridgeServer.js'
 import agentCodeBridge from './extension.js'
-import { BRIDGE_PROTOCOL_VERSION, BRIDGE_SOCKET_ENV, BRIDGE_TOKEN_ENV, type BridgeEvent } from './protocol.js'
+import { BRIDGE_PROTOCOL_VERSION, BRIDGE_SOCKET_ENV, BRIDGE_TOKEN_ENV, MCP_SERVERS_ENV, type BridgeEvent } from './protocol.js'
 
 // The real extension module against the real host server over a real Unix
 // socket. Pi itself is faked here (the live tier loads the extension into the
@@ -247,6 +247,7 @@ describe('host admission', () => {
     expect(source).toContain(`const BRIDGE_PROTOCOL_VERSION = ${BRIDGE_PROTOCOL_VERSION}`)
     expect(source).toContain(`const BRIDGE_SOCKET_ENV = '${BRIDGE_SOCKET_ENV}'`)
     expect(source).toContain(`const BRIDGE_TOKEN_ENV = '${BRIDGE_TOKEN_ENV}'`)
+    expect(source).toContain(`const MCP_SERVERS_ENV = '${MCP_SERVERS_ENV}'`)
     // Rule 3: no runtime import other than node builtins.
     const runtimeImports = [...source.matchAll(/^import (?!type )[^\n]* from '([^']+)'/gm)].map(m => m[1])
     expect(runtimeImports.every(specifier => specifier!.startsWith('node:'))).toBe(true)

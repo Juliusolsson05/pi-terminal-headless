@@ -29,4 +29,5 @@ export type { ConditionAction, ConditionCustomAction, ConditionRecord, Condition
 export { CommittedChannel, ScreenChannel, SemanticChannel } from './channels/channels.js'
 export type { CommittedEvent, ScreenEvent, SemanticEvent, SemanticSource } from './channels/types.js'
 export type { PendingDialog, StreamPhase } from './live/types.js'
-export type { PromptOutcome } from './bridge/protocol.js'
+export { MCP_SERVERS_ENV } from './bridge/protocol.js'
+export type { McpServerLaunchSpec, PromptOutcome } from './bridge/protocol.js'

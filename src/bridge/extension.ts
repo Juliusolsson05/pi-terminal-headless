@@ -17,8 +17,10 @@
 //     not resolve; the protocol import below is type-only and erased.
 //  4. Authenticate first: the first frame is a hello with the per-spawn token.
 //  5. Observe, don't steer. No tool call is blocked or rewritten, no dialog is
-//     answered, no model/tool/setting is changed. The one active operation is
-//     the host's explicit prompt/abort request.
+//     answered, no model or setting is changed. The active operations are the
+//     host's explicit prompt/abort requests (a delivered `/compact` included)
+//     and the Agent Code MCP tools the host configured for this launch, added
+//     as tools of their own. No built-in tool is replaced.
 //  6. Small payloads: ids, kinds and flags. Message bodies stay in Pi's
 //     session file, which the host's durable reader owns.
 //  7. Unknown/changed events are ignored, never fatal (Pi ships breaking
@@ -36,6 +38,7 @@ import type { BridgeEvent, BridgeRequest, ExtensionFrame, PromptOutcome } from '
 const BRIDGE_PROTOCOL_VERSION = 1
 const BRIDGE_SOCKET_ENV = 'AGENT_CODE_PI_BRIDGE_SOCKET'
 const BRIDGE_TOKEN_ENV = 'AGENT_CODE_PI_BRIDGE_TOKEN'
+const MCP_SERVERS_ENV = 'AGENT_CODE_PI_MCP_SERVERS'
 
 // How long a prompt may take to show up in Pi's conversation or queue before
 // we tell the host "unknown". Pi accepts a prompt synchronously into its own
@@ -178,6 +181,239 @@ function phaseOf(assistantEventType: unknown): 'thinking' | 'responding' | 'tool
 
 type Delivery = { id: number; text: string; entered: boolean; timer?: ReturnType<typeof setTimeout>; poll?: ReturnType<typeof setInterval> }
 
+// ---------------------------------------------------------------------------
+// Agent Code's built-in MCP servers, proxied as Pi tools.
+//
+// WHY a proxy inside the bridge: Pi has no MCP client, by design (its README:
+// "No MCP. Build CLI tools with READMEs, or build an extension that adds MCP
+// support"). Claude, Codex, OpenCode and Grok each receive the same per-launch
+// HTTP endpoints (tldr, goal, orchestration, transcripts, ...) through their
+// own MCP config. Pi receives them here: the bridge speaks the MCP
+// Streamable HTTP transport to each endpoint and registers every listed tool
+// with pi.registerTool.
+//
+// Shape of the client, from the host it talks to (BuiltInMcpHttpHost):
+// stateless (no Mcp-Session-Id), and every POST answered as an SSE stream
+// whose `data:` event carries the JSON-RPC reply. A JSON body is accepted too,
+// so a future `enableJsonResponse` host keeps working. No GET notification
+// stream is opened, because the host sends no server notifications.
+//
+// Tool names follow Claude Code's `mcp__<server>__<tool>`. That is what Agent
+// Code's own prompts, skills and orchestration briefs name, so an instruction
+// written for any provider resolves the same way here.
+//
+// Credentials: the host passes header VALUES in their own env vars and only
+// their names in the JSON (never argv). All of it is removed from
+// process.env on first read, because Pi's bash tool inherits the environment
+// and a model has no business reading the bearer.
+// ---------------------------------------------------------------------------
+
+type McpServerSpec = { name: string; url: string; headerEnv: Record<string, string> }
+type McpServer = { name: string; url: string; headers: Record<string, string> }
+type McpTool = { server: McpServer; toolName: string; piName: string; description: string; inputSchema: Record<string, unknown> }
+type McpDiscovery = { tools: McpTool[]; instructions: Array<{ server: string; text: string }> }
+
+// MCP revision this client speaks. The SDK server behind every Agent Code
+// endpoint negotiates down from it if it must, and we then send the version it
+// chose on every later request, as the transport spec requires.
+const MCP_PROTOCOL_VERSION = '2025-06-18'
+// Discovery must never hold a user's first prompt for long. A host that has
+// not answered in this time is not going to, and the turn runs without tools.
+const MCP_DISCOVERY_TIMEOUT_MS = 10_000
+// Provider tool-name limit (Anthropic and OpenAI both cap at 64, [A-Za-z0-9_-]).
+const TOOL_NAME_LIMIT = 64
+
+function readMcpServers(): McpServer[] {
+  const raw = process.env[MCP_SERVERS_ENV]
+  delete process.env[MCP_SERVERS_ENV]
+  if (!raw) return []
+  let specs: McpServerSpec[]
+  try {
+    specs = JSON.parse(raw)
+  } catch {
+    return []
+  }
+  if (!Array.isArray(specs)) return []
+  const servers: McpServer[] = []
+  for (const spec of specs) {
+    if (!spec || typeof spec.name !== 'string' || typeof spec.url !== 'string') continue
+    const headers: Record<string, string> = {}
+    for (const [header, variable] of Object.entries(spec.headerEnv ?? {})) {
+      const value = process.env[variable]
+      delete process.env[variable]
+      if (typeof value === 'string') headers[header] = value
+    }
+    servers.push({ name: spec.name, url: spec.url, headers })
+  }
+  return servers
+}
+
+function piToolName(server: string, tool: string): string {
+  const clean = (value: string) => value.replace(/[^A-Za-z0-9_-]/g, '_')
+  return `mcp__${clean(server)}__${clean(tool)}`.slice(0, TOOL_NAME_LIMIT)
+}
+
+/** JSON-RPC messages from an SSE body: every `data:` payload that parses. */
+function sseMessages(body: string): any[] {
+  const messages: any[] = []
+  for (const event of body.split(/\r?\n\r?\n/)) {
+    const data = event.split(/\r?\n/).filter(line => line.startsWith('data:')).map(line => line.slice(5).replace(/^ /, '')).join('\n')
+    if (!data) continue
+    try {
+      messages.push(JSON.parse(data))
+    } catch {
+      // A keep-alive or a partial event; the reply we wait for is elsewhere.
+    }
+  }
+  return messages
+}
+
+class McpHttpClient {
+  private nextId = 1
+  private protocolVersion: string | undefined
+
+  constructor(readonly server: McpServer) {}
+
+  private headers(): Record<string, string> {
+    return {
+      'content-type': 'application/json',
+      accept: 'application/json, text/event-stream',
+      ...(this.protocolVersion ? { 'mcp-protocol-version': this.protocolVersion } : {}),
+      ...this.server.headers,
+    }
+  }
+
+  async request(method: string, params: unknown, signal?: AbortSignal): Promise<any> {
+    const id = this.nextId++
+    const response = await fetch(this.server.url, { method: 'POST', headers: this.headers(), body: JSON.stringify({ jsonrpc: '2.0', id, method, params }), signal })
+    if (!response.ok) throw new Error(`${this.server.name} ${method}: HTTP ${response.status}`)
+    const type = response.headers.get('content-type') ?? ''
+    const messages = type.includes('text/event-stream') ? sseMessages(await response.text()) : [await response.json()]
+    const reply = messages.find(message => message && message.id === id)
+    if (!reply) throw new Error(`${this.server.name} ${method}: no reply`)
+    if (reply.error) throw new Error(`${this.server.name} ${method}: ${reply.error.message ?? 'error'}`)
+    return reply.result
+  }
+
+  async notify(method: string, signal?: AbortSignal): Promise<void> {
+    const response = await fetch(this.server.url, { method: 'POST', headers: this.headers(), body: JSON.stringify({ jsonrpc: '2.0', method }), signal })
+    // 202 Accepted with no body is the spec's answer; drain whatever came.
+    await response.text().catch(() => '')
+  }
+
+  async initialize(signal: AbortSignal): Promise<string | undefined> {
+    const result = await this.request('initialize', { protocolVersion: MCP_PROTOCOL_VERSION, capabilities: {}, clientInfo: { name: 'agent-code-pi-bridge', version: String(BRIDGE_PROTOCOL_VERSION) } }, signal)
+    this.protocolVersion = typeof result?.protocolVersion === 'string' ? result.protocolVersion : MCP_PROTOCOL_VERSION
+    await this.notify('notifications/initialized', signal)
+    return typeof result?.instructions === 'string' && result.instructions.trim() ? result.instructions : undefined
+  }
+
+  async listTools(signal: AbortSignal): Promise<any[]> {
+    const tools: any[] = []
+    let cursor: string | undefined
+    // Bounded: a host that keeps returning a cursor must not loop forever.
+    for (let page = 0; page < 50; page += 1) {
+      const result = await this.request('tools/list', cursor ? { cursor } : {}, signal)
+      if (Array.isArray(result?.tools)) tools.push(...result.tools)
+      cursor = typeof result?.nextCursor === 'string' && result.nextCursor ? result.nextCursor : undefined
+      if (!cursor) break
+    }
+    return tools
+  }
+}
+
+// The connected clients, by server name, that tool executions call through.
+// Module scope is the process scope here: Pi loads this file once per
+// process, and the singleton above already relies on that.
+let mcpClients = new Map<string, McpHttpClient>()
+
+async function discoverMcp(servers: McpServer[], report: (status: Array<{ name: string; tools: number; error?: string }>) => void): Promise<McpDiscovery> {
+  const signal = AbortSignal.timeout(MCP_DISCOVERY_TIMEOUT_MS)
+  const discovery: McpDiscovery = { tools: [], instructions: [] }
+  const status: Array<{ name: string; tools: number; error?: string }> = []
+  const clients = new Map<string, McpHttpClient>()
+  await Promise.all(servers.map(async server => {
+    try {
+      const client = new McpHttpClient(server)
+      const instructions = await client.initialize(signal)
+      const tools = await client.listTools(signal)
+      clients.set(server.name, client)
+      if (instructions) discovery.instructions.push({ server: server.name, text: instructions })
+      for (const tool of tools) {
+        if (!tool || typeof tool.name !== 'string') continue
+        discovery.tools.push({
+          server, toolName: tool.name, piName: piToolName(server.name, tool.name),
+          description: typeof tool.description === 'string' ? tool.description : '',
+          inputSchema: toolParameters(tool.inputSchema),
+        })
+      }
+      status.push({ name: server.name, tools: tools.length })
+    } catch (error) {
+      status.push({ name: server.name, tools: 0, error: String((error as Error)?.message ?? error) })
+    }
+  }))
+  mcpClients = clients
+  report(status)
+  return discovery
+}
+
+/**
+ * The MCP inputSchema as Pi tool parameters. Pi validates arguments against
+ * a plain JSON Schema directly (pi-ai validation.js takes its JSON-schema
+ * coercion path when the TypeBox symbol is absent), so no TypeBox wrapper is
+ * needed. `$schema` is dropped because it only names a dialect, which the
+ * validator must not be asked to fetch. A missing or non-object schema
+ * becomes "no arguments", since registerTool refuses anything but an object
+ * schema.
+ */
+function toolParameters(schema: unknown): Record<string, unknown> {
+  if (!schema || typeof schema !== 'object' || Array.isArray(schema)) return { type: 'object', properties: {} }
+  const { $schema: _dialect, ...rest } = schema as Record<string, unknown>
+  return rest.type === 'object' ? rest : { type: 'object', properties: {} }
+}
+
+/** An MCP tools/call result as Pi tool content. */
+function toolContent(result: any): Array<{ type: 'text'; text: string } | { type: 'image'; data: string; mimeType: string }> {
+  const out: Array<{ type: 'text'; text: string } | { type: 'image'; data: string; mimeType: string }> = []
+  for (const block of Array.isArray(result?.content) ? result.content : []) {
+    if (block?.type === 'text' && typeof block.text === 'string') out.push({ type: 'text', text: block.text })
+    else if (block?.type === 'image' && typeof block.data === 'string' && typeof block.mimeType === 'string') out.push({ type: 'image', data: block.data, mimeType: block.mimeType })
+    // Resources, links and audio have no Pi content type. The model still
+    // gets them, as the JSON the server sent, rather than losing them.
+    else if (block) out.push({ type: 'text', text: JSON.stringify(block) })
+  }
+  if (out.length === 0 && result?.structuredContent !== undefined) out.push({ type: 'text', text: JSON.stringify(result.structuredContent) })
+  return out.length ? out : [{ type: 'text', text: '(no output)' }]
+}
+
+function registerMcpTools(pi: AnyPi, discovery: McpDiscovery): void {
+  for (const tool of discovery.tools) {
+    guard(() => pi.registerTool({
+      name: tool.piName,
+      label: `${tool.server.name}: ${tool.toolName}`,
+      description: tool.description,
+      parameters: tool.inputSchema,
+      async execute(_toolCallId: string, params: unknown, signal: AbortSignal | undefined) {
+        const client = mcpClients.get(tool.server.name)
+        if (!client) throw new Error(`Agent Code MCP server ${tool.server.name} is not connected`)
+        const result = await client.request('tools/call', { name: tool.toolName, arguments: params ?? {} }, signal)
+        const content = toolContent(result)
+        // Pi marks a tool result as an error when execute throws, which is
+        // how an MCP `isError` must reach the model and the TUI.
+        if (result?.isError === true) throw new Error(content.map(block => block.type === 'text' ? block.text : '').join('\n') || 'MCP tool reported an error')
+        return { content, details: { server: tool.server.name, tool: tool.toolName } }
+      },
+    }))
+  }
+}
+
+/** Server instructions, as Claude Code presents them, in their own prompt section. */
+function mcpInstructionsSection(discovery: McpDiscovery): string | undefined {
+  if (discovery.instructions.length === 0) return undefined
+  return ['# MCP Server Instructions', '', 'The following MCP servers have provided instructions for how to use their tools and resources:', '',
+    ...discovery.instructions.flatMap(entry => [`## ${entry.server}`, entry.text, ''])].join('\n').trimEnd()
+}
+
 /**
  * Process-wide bridge state.
  *
@@ -198,6 +434,10 @@ type BridgeState = {
   piVersion?: string
   lastPhase?: string
   deliveries: Delivery[]
+  mcpServers: McpServer[]
+  /** Started at the first session_start, once per process; see ensureMcp. */
+  mcp?: Promise<McpDiscovery>
+  mcpResult?: McpDiscovery
 }
 
 const STATE_KEY = Symbol.for('agent-code.pi-bridge')
@@ -229,6 +469,7 @@ function bridgeState(pi: AnyPi): BridgeState | undefined {
     ctx: undefined,
     deliveries: [],
     link: undefined as unknown as HostLink,
+    mcpServers: readMcpServers(),
   }
   state.link = new HostLink(
     socketPath,
@@ -245,6 +486,30 @@ function bridgeState(pi: AnyPi): BridgeState | undefined {
   )
   holder[STATE_KEY] = state
   return state
+}
+
+/**
+ * Discover the MCP tools once per pi process and register them on the
+ * current runtime.
+ *
+ * WHY it starts at session_start and not in the factory: Pi's rule is that a
+ * factory opens nothing, because some invocations load extensions without ever
+ * starting a session. WHY once: the endpoints and their token belong to this
+ * launch, and every later runtime (/new, /resume, /fork, /reload) re-runs the
+ * factory, which registers the already-discovered tools on its own `pi` (see
+ * the factory below). A second discovery would only race the first.
+ */
+function ensureMcp(state: BridgeState): Promise<McpDiscovery> | undefined {
+  if (state.mcpServers.length === 0) return undefined
+  state.mcp ??= discoverMcp(state.mcpServers, servers => emit(state, { name: 'mcp_status', servers })).then(discovery => {
+    state.mcpResult = discovery
+    // The runtime that is current when discovery lands gets the tools. Pi
+    // activates newly registered extension tools (agent-session.js
+    // _refreshToolRegistry adds names not previously registered).
+    registerMcpTools(state.pi, discovery)
+    return discovery
+  }, () => ({ tools: [], instructions: [] }))
+  return state.mcp
 }
 
 function identity(c: AnyCtx): { sessionId: string; file: string; leafId: string | null } {
@@ -336,6 +601,11 @@ export default function agentCodeBridge(pi: AnyPi): void {
   // extensions without starting a session). The link connects from the
   // first project_trust / session_start handler below.
 
+  // A rebuilt runtime (/new, /resume, /fork, /reload) starts with no
+  // extension tools. Registering in the factory is Pi's normal path, and the
+  // discovery already holds everything needed.
+  if (state.mcpResult) registerMcpTools(pi, state.mcpResult)
+
   const on = (name: string, handler: (event: any, c: AnyCtx) => unknown) => {
     guard(() => pi.on(name, (event: any, c: AnyCtx) => {
       if (c) state.ctx = c
@@ -356,6 +626,7 @@ export default function agentCodeBridge(pi: AnyPi): void {
 
   on('session_start', (event, c) => {
     state.link.ensure()
+    void ensureMcp(state)
     emit(state, { name: 'session_start', reason: String(event?.reason ?? ''), ...(event?.previousSessionFile ? { previousSessionFile: String(event.previousSessionFile) } : {}), idle: Boolean(c?.isIdle?.() ?? true), ...identity(c) })
   })
   on('session_shutdown', event => {
@@ -373,6 +644,26 @@ export default function agentCodeBridge(pi: AnyPi): void {
   on('session_before_compact', event => emit(state, { name: 'compaction_start', ...(event?.reason ? { reason: String(event.reason) } : {}) }))
   on('session_compact', event => emit(state, { name: 'session_compact', ...(event?.compactionEntry?.id ? { compactionEntryId: String(event.compactionEntry.id) } : {}), fromExtension: Boolean(event?.fromExtension) }))
   on('session_compact_failed', event => emit(state, { name: 'session_compact_failed', ...(event?.errorMessage ? { errorMessage: String(event.errorMessage) } : {}) }))
+
+  // The first prompt must see the tools even when the user types before
+  // discovery lands: wait for it here (bounded by the discovery timeout).
+  // Tools registered during this hook reach this very turn, because Pi reads
+  // the active tool loadout after before_agent_start returns. The server
+  // instructions go in their own prompt section, which composes with other
+  // extensions, where returning a whole systemPrompt would overwrite them.
+  guard(() => pi.on('before_agent_start', async (event: any) => {
+    try {
+      const discovery = await ensureMcp(state)
+      const section = discovery && mcpInstructionsSection(discovery)
+      if (section && event?.systemPromptOptions) {
+        event.systemPromptOptions.sections = { ...(event.systemPromptOptions.sections ?? {}), 'agent-code-mcp': section }
+      }
+    } catch {
+      // Rule 1: a failed discovery is a turn without Agent Code tools, never a
+      // failed turn.
+    }
+    return undefined
+  }))
 
   on('agent_start', () => {
     state.lastPhase = undefined

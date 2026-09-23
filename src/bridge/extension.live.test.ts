@@ -12,7 +12,8 @@
 
 import { execFileSync } from 'node:child_process'
 import { randomBytes, randomUUID } from 'node:crypto'
-import { copyFileSync, mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
+import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
+import { createServer } from 'node:http'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -42,7 +43,7 @@ async function until(predicate: () => boolean, label: string, timeoutMs = 15_000
   }
 }
 
-async function launch(settings?: Record<string, unknown>) {
+async function launch(settings?: Record<string, unknown>, extraEnv: Record<string, string> = {}) {
   const require = createRequire(import.meta.url)
   const pty = require(process.env.NODE_PTY_PATH ?? 'node-pty') as { spawn(f: string, a: string[], o: object): Pty }
   const { Terminal } = require('@xterm/headless') as { Terminal: new (o: object) => { write(d: string): void; onData(l: (d: string) => void): void } }
@@ -70,6 +71,7 @@ async function launch(settings?: Record<string, unknown>) {
     env: {
       PATH: process.env.PATH, HOME: join(root, 'home'), PI_CODING_AGENT_DIR: join(root, 'agent'), PI_OFFLINE: '1', PI_SKIP_VERSION_CHECK: '1', PI_TELEMETRY: '0',
       TERM: 'xterm-256color', AGENT_CODE_PI_BRIDGE_SOCKET: socketPath, AGENT_CODE_PI_BRIDGE_TOKEN: token,
+      ...extraEnv,
     },
   })
   let exited = false
@@ -134,9 +136,50 @@ describe.skipIf(!LIVE)('bridge extension inside the real pi', () => {
     await expect(server.prompt('/compact')).resolves.toEqual({ outcome: 'started' })
     await until(() => events.some(e => e.name === 'session_compact' || e.name === 'session_compact_failed'), 'compaction outcome', 30_000)
     expect(events.find(e => e.name === 'session_compact_failed')).toBeUndefined()
-    const rows = (await import('node:fs')).readFileSync(start.file, 'utf8').trim().split('\n').map(line => JSON.parse(line))
+    const rows = readFileSync(start.file, 'utf8').trim().split('\n').map(line => JSON.parse(line))
     expect(rows.some(row => row.type === 'compaction')).toBe(true)
     expect(rows.some(row => row.message?.role === 'user' && JSON.stringify(row.message.content).includes('/compact'))).toBe(false)
+  }, 60_000)
+
+  it('Agent Code MCP tools reach the model inside the real pi, with their server instructions, and run against the server', async () => {
+    // A local MCP endpoint in the built-in host's wire shape (stateless, SSE
+    // replies, bearer required). The app's system test covers the real host.
+    const calls: Array<{ method: string; params: any }> = []
+    const mcp = createServer((req, res) => {
+      let data = ''
+      req.on('data', chunk => { data += chunk })
+      req.on('end', () => {
+        const message = JSON.parse(data)
+        calls.push({ method: message.method, params: message.params })
+        if (req.headers.authorization !== 'Bearer live-secret') { res.writeHead(401).end(); return }
+        if (message.id === undefined) { res.writeHead(202).end(); return }
+        const result = message.method === 'initialize'
+          ? { protocolVersion: '2025-06-18', capabilities: { tools: {} }, serverInfo: { name: 'agent_code', version: '1' }, instructions: 'Echo is available.' }
+          : message.method === 'tools/list'
+            ? { tools: [{ name: 'echo', description: 'Echo text back.', inputSchema: { $schema: 'http://json-schema.org/draft-07/schema#', type: 'object', properties: { text: { type: 'string' } }, required: ['text'], additionalProperties: false } }] }
+            : { content: [{ type: 'text', text: `echo: ${message.params?.arguments?.text}` }] }
+        res.writeHead(200, { 'content-type': 'text/event-stream' })
+        res.end(`event: message\ndata: ${JSON.stringify({ jsonrpc: '2.0', id: message.id, result })}\n\n`)
+      })
+    })
+    await new Promise<void>(resolve => mcp.listen(0, '127.0.0.1', resolve))
+    cleanups.push(() => new Promise<void>(resolve => mcp.close(() => resolve())))
+    const url = `http://127.0.0.1:${(mcp.address() as { port: number }).port}/mcp/live`
+    const { server, events } = await launch(undefined, {
+      AGENT_CODE_PI_MCP_SERVERS: JSON.stringify([{ name: 'agent_code', url, headerEnv: { Authorization: 'AGENT_CODE_MCP_0_0' } }]),
+      AGENT_CODE_MCP_0_0: 'Bearer live-secret',
+    })
+    await until(() => events.some(e => e.name === 'session_start'), 'session_start')
+    await expect(server.prompt('use the tool [mcp]')).resolves.toEqual({ outcome: 'started' })
+    await until(() => events.some(e => e.name === 'agent_settled'), 'settle', 30_000)
+    expect(events.find(e => e.name === 'mcp_status')).toEqual({ name: 'mcp_status', servers: [{ name: 'agent_code', tools: 1 }] })
+    // The model saw the tool and the instructions section, and the call ran.
+    const call = calls.find(c => c.method === 'tools/call')
+    expect(call?.params).toEqual({ name: 'echo', arguments: { text: 'tool:true instructions:true' } })
+    const start = events.find(e => e.name === 'session_start') as Extract<BridgeEvent, { name: 'session_start' }>
+    const rows = readFileSync(start.file, 'utf8').trim().split('\n').map(line => JSON.parse(line))
+    const result = rows.find(row => row.message?.role === 'toolResult')
+    expect(result?.message).toMatchObject({ toolName: 'mcp__agent_code__echo', isError: false, content: [{ type: 'text', text: 'echo: tool:true instructions:true' }] })
   }, 60_000)
 
   it('abort stops a streaming reply; closing the host socket leaves pi running', async () => {

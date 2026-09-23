@@ -13,6 +13,11 @@
 //   [tool]   one bash tool call, then a final text reply (a two-step run)
 //   [error]  an assistant message with stopReason "error" (provider failure)
 //   [slow]   a long reply, so Esc / a queued prompt can interrupt mid-stream
+//   [mcp]    one call to the bridge-proxied Agent Code MCP tool
+//            `mcp__agent_code__echo` (the bridge live test's local server),
+//            whose argument reports what the model was actually given:
+//            whether that tool was declared in the request and whether the
+//            system prompt carried the MCP server instructions section
 //   (none)   a short text reply
 // Pi's own summarization requests (compaction, branch summary) carry no
 // marker and get the default reply, which is a perfectly good summary text.
@@ -46,6 +51,18 @@ export default function (pi: any) {
     if (text.includes('[tool]')) {
       return fauxAssistantMessage(
         [fauxThinking('I should run a command.'), fauxText('Running a command.'), fauxToolCall('bash', { command: 'echo probe-tool-output' })],
+        { stopReason: 'toolUse' },
+      )
+    }
+    if (text.includes('[mcp]')) {
+      // pi 0.87.1 hands providers a transcript context: the prompt, its
+      // named sections and the tool declarations travel as `system`
+      // messages (`sections`, `toolsAdded`), not as systemPrompt/tools fields.
+      const system = (context.messages ?? []).filter(m => m.role === 'system') as Array<AnyMessage & { toolsAdded?: Array<{ name?: string }> }>
+      const hasTool = system.some(m => (m.toolsAdded ?? []).some(tool => tool.name === 'mcp__agent_code__echo'))
+      const hasInstructions = system.some(m => JSON.stringify(m).includes('# MCP Server Instructions'))
+      return fauxAssistantMessage(
+        [fauxToolCall('mcp__agent_code__echo', { text: `tool:${hasTool} instructions:${hasInstructions}` })],
         { stopReason: 'toolUse' },
       )
     }
