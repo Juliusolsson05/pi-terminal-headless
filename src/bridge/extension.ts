@@ -478,6 +478,30 @@ const STATE_KEY = Symbol.for('agent-code.pi-bridge')
 /** Pi's TUI syntax: `/compact` plus optional free-text instructions. */
 const COMPACT_COMMAND = /^\/compact(?:\s+([\s\S]*?))?\s*$/
 
+/**
+ * Pi 0.87.1's built-in TUI commands (dist/core/slash-commands.js,
+ * BUILTIN_SLASH_COMMANDS), minus `compact`, which the bridge runs itself.
+ *
+ * WHY refuse them instead of forwarding: sendUserMessage never dispatches a
+ * built-in command, so `/new` from the host reached the MODEL as a question.
+ * Seen with a real model (GLM-5.3), which answered that "/new" looks like a
+ * command for the pi interface, while the host was told `started` and waited
+ * for a session switch that never came. The session-control ones (/new,
+ * /fork, /tree, /resume, ...) exist only on a COMMAND context
+ * (ExtensionCommandContext), which a bridge driven by socket requests does
+ * not hold. So the honest answer is `rejected` with the reason: nothing
+ * reached pi, the host says so, and the user can type it in the pane.
+ *
+ * WHEN THIS DRIFTS: a Pi upgrade that adds a built-in lets that one through
+ * as text again, the same failure as before this list existed. Re-read
+ * BUILTIN_SLASH_COMMANDS on every accepted-version bump.
+ */
+const PI_BUILTIN_COMMANDS = new Set([
+  'settings', 'model', 'tree', 'thinking', 'scoped-models', 'export', 'import', 'share', 'bug', 'copy', 'name',
+  'session', 'changelog', 'hotkeys', 'fork', 'clone', 'trust', 'login', 'logout', 'new', 'resume', 'reload', 'quit',
+])
+const SLASH_COMMAND = /^\/([a-z][a-z:-]*)(?:\s|$)/
+
 function currentBridgeState(): BridgeState | undefined {
   return (globalThis as unknown as Record<symbol, BridgeState | null | undefined>)[STATE_KEY] ?? undefined
 }
@@ -649,6 +673,11 @@ function handleRequestUnsafe(state: BridgeState, id: number, request: BridgeRequ
       // Never fall back to sendUserMessage: that would hand the model the
       // literal text while the host believes a compaction started.
       reply(state, id, false, 'this pi exposes no compaction API to extensions')
+      return
+    }
+    const builtin = compact ? null : SLASH_COMMAND.exec(text.trim())?.[1]
+    if (builtin && PI_BUILTIN_COMMANDS.has(builtin)) {
+      reply(state, id, false, `/${builtin} is a pi TUI command; type it in the pi pane (sent as a prompt, pi would hand it to the model as text)`)
       return
     }
     if (!compact && c && c.model === undefined) {

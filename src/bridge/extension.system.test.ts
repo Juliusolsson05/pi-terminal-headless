@@ -273,6 +273,24 @@ describe('bridge extension ↔ host', () => {
     expect(pi.sent).toEqual([])
   })
 
+  // Found with a real model: `/new` sent as a prompt reached GLM-5.3 as text
+  // ("looks like a command meant for the pi interface") while the host was
+  // told `started`. Pi's built-ins are refused; anything else starting with a
+  // slash (a path, an extension command, a word) is still a prompt.
+  it('a pi built-in TUI command is refused with its reason, never sent to the model as text', async () => {
+    const pi = new FakePi()
+    const ctx = await started(pi)
+    for (const command of ['/new', '/tree', '/resume', '/fork abc', '/model  glm-5.3', '/quit']) {
+      await expect(server.prompt(command)).rejects.toMatchObject({ code: 'rejected', message: expect.stringMatching(/pi TUI command/) })
+    }
+    expect(pi.sent).toEqual([])
+    pi.sendImpl = text => pi.fire('message_start', { message: { role: 'user', content: text } }, ctx)
+    for (const prompt of ['/newsletter draft', '/usr/bin is on PATH?', '/my-extension-command go']) {
+      await expect(server.prompt(prompt)).resolves.toEqual({ outcome: 'started' })
+    }
+    expect(pi.sent.map(sent => sent.text)).toEqual(['/newsletter draft', '/usr/bin is on PATH?', '/my-extension-command go'])
+  })
+
   it('without the env (someone ran pi -e by hand) the extension is inert', () => {
     delete process.env[BRIDGE_SOCKET_ENV]
     delete process.env[BRIDGE_TOKEN_ENV]

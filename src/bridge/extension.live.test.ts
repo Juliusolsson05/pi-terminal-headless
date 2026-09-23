@@ -146,6 +146,11 @@ describe.skipIf(!LIVE)('bridge extension inside the real pi', () => {
     // replies, bearer required). The app's system test covers the real host.
     const calls: Array<{ method: string; params: any }> = []
     const mcp = createServer((req, res) => {
+      // WHY answer strangers: the port is ephemeral on 127.0.0.1, and other
+      // local software probes such ports (a `GET /` was observed from a dev
+      // server scanner). Parsing its empty body threw an uncaught error that
+      // vitest pins on this test. The bridge only ever POSTs to the url below.
+      if (req.method !== 'POST' || req.url !== '/mcp/live') { req.resume(); res.writeHead(404).end(); return }
       let data = ''
       req.on('data', chunk => { data += chunk })
       req.on('end', () => {
