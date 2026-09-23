@@ -12,7 +12,7 @@ export type { PiActivity, PiTerminalError, PiTerminalHeadlessEvents, PiTerminalH
 
 export { preparePiTerminalLaunch } from './launch/prepareLaunch.js'
 export type { PiTerminalLaunch, PreparePiLaunchOptions } from './launch/prepareLaunch.js'
-export { encodeCwdForSessionDir, listAllPiSessionFiles, resolvePiAgentDir, resolvePiSessionDir, resolvePiSessionFile, resolvePiSessionsRoot, sessionIdFromFileName } from './launch/sessionPaths.js'
+export { encodeCwdForSessionDir, listAllPiSessionFiles, piProcessCwd, resolvePiAgentDir, resolvePiSessionDir, resolvePiSessionFile, resolvePiSessionsRoot, sessionIdFromFileName } from './launch/sessionPaths.js'
 export type { PiPathEnvironment } from './launch/sessionPaths.js'
 
 export type { PtyDisposable, PtyExitEvent, PtyLike } from './terminal/PtyBinding.js'

@@ -1,4 +1,4 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, realpathSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
@@ -54,6 +54,16 @@ describe('session directory resolution (mirrors the pinned Pi release)', () => {
     expect(await resolvePiSessionFile({ env: {}, homeDirectory: h, cwd: '/w/p', sessionId: '709ab74b-2d9d-434a-9298-d7dc22c53d42' })).toBe(join(dir, name))
     expect(await resolvePiSessionFile({ env: {}, homeDirectory: h, cwd: '/w/p', sessionId: 'other' })).toBeNull()
     expect(await resolvePiSessionFile({ env: {}, homeDirectory: h, cwd: '/nowhere', sessionId: 'x' })).toBeNull()
+  })
+
+  it('a symlinked cwd resolves to the directory pi wrote (pi encodes process.cwd(), the real path)', async () => {
+    const h = home()
+    const real = join(h, 'real-project')
+    mkdirSync(real)
+    const link = join(h, 'linked-project')
+    symlinkSync(real, link)
+    expect(await resolvePiSessionDir({ env: {}, homeDirectory: h, cwd: link }))
+      .toBe(join(h, '.pi', 'agent', 'sessions', encodeCwdForSessionDir(realpathSync(real))))
   })
 
   it('lists every session across per-cwd directories by default, or a flat custom dir', async () => {

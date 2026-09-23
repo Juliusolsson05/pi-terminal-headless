@@ -19,7 +19,7 @@
 // file for running panes (bridge `session_start`), so this only affects cold
 // reads of such projects; they fall back to "not found", never to a wrong file.
 
-import { readdir, readFile } from 'node:fs/promises'
+import { readdir, readFile, realpath } from 'node:fs/promises'
 import { homedir } from 'node:os'
 import { join, resolve } from 'node:path'
 
@@ -68,7 +68,22 @@ export async function resolvePiSessionDir(options: PiPathEnvironment & { cwd: st
   const agentDir = resolvePiAgentDir(options)
   const fromSetting = await readSessionDirSetting(agentDir, home)
   if (fromSetting) return fromSetting
-  return join(agentDir, 'sessions', encodeCwdForSessionDir(options.cwd))
+  return join(agentDir, 'sessions', encodeCwdForSessionDir(await piProcessCwd(options.cwd)))
+}
+
+/**
+ * The cwd as the `pi` process will see it.
+ *
+ * WHY realpath: Pi encodes `process.cwd()` (main.js), and Node reports the
+ * RESOLVED directory, symlinks followed. A pane whose cwd is a symlinked path
+ * (any project under macOS `/tmp`, a symlinked checkout) otherwise resolves to
+ * `--tmp-x--` while pi wrote `--private-tmp-x--`, and history, switching and
+ * the catalog all report an existing conversation as missing. A cwd that does
+ * not exist cannot be a pi process's cwd, so `resolve` is only a fallback that
+ * keeps lookups total.
+ */
+export async function piProcessCwd(cwd: string): Promise<string> {
+  return realpath(cwd).catch(() => resolve(cwd))
 }
 
 /**
