@@ -18,6 +18,10 @@
 //            whose argument reports what the model was actually given:
 //            whether that tool was declared in the request and whether the
 //            system prompt carried the MCP server instructions section
+//   [call:NAME {json}]  one call to the tool NAME with those JSON arguments
+//            (optional; none means {}). Agent Code's app live test names a
+//            real built-in MCP tool this way. Then a text reply once its
+//            result is back.
 //   (none)   a short text reply
 // Pi's own summarization requests (compaction, branch summary) carry no
 // marker and get the default reply, which is a perfectly good summary text.
@@ -54,6 +58,8 @@ export default function (pi: any) {
         { stopReason: 'toolUse' },
       )
     }
+    const call = /\[call:([A-Za-z0-9_-]+)(?: (\{[^\]]*\}))?\]/.exec(text)
+    if (call) return fauxAssistantMessage([fauxToolCall(call[1]!, call[2] ? JSON.parse(call[2]) : {})], { stopReason: 'toolUse' })
     if (text.includes('[mcp]')) {
       // pi 0.87.1 hands providers a transcript context: the prompt, its
       // named sections and the tool declarations travel as `system`
