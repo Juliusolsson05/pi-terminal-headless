@@ -201,6 +201,8 @@ type BridgeState = {
 }
 
 const STATE_KEY = Symbol.for('agent-code.pi-bridge')
+/** Pi's TUI syntax: `/compact` plus optional free-text instructions. */
+const COMPACT_COMMAND = /^\/compact(?:\s+([\s\S]*?))?\s*$/
 
 function bridgeState(pi: AnyPi): BridgeState | undefined {
   const holder = globalThis as unknown as Record<symbol, BridgeState | null | undefined>
@@ -288,6 +290,23 @@ function handleRequest(state: BridgeState, id: number, request: BridgeRequest): 
   }
   if (request.op === 'prompt') {
     const text = String((request as { text?: unknown }).text ?? '')
+    // `/compact [instructions]` is the one built-in command the host sends
+    // programmatically: provider switching's opt-in "compact the source
+    // first" path delivers it exactly as it does to Claude. Typed into Pi's
+    // TUI, it runs compaction. Sent through sendUserMessage it does NOT:
+    // sendUserMessage never dispatches built-in commands (agent-session.js
+    // prompt(): only extension commands and templates, and only when asked),
+    // so the model would receive the literal text "/compact" as a question.
+    // ctx.compact() is the same AgentSession.compact the TUI command calls,
+    // including aborting a live run first. The durable evidence the host waits
+    // for is the compaction row in the session file, so the acknowledgement is
+    // simply "started".
+    const compact = COMPACT_COMMAND.exec(text)
+    if (compact && typeof c?.compact === 'function') {
+      c.compact(compact[1] ? { customInstructions: compact[1] } : {})
+      reply(state, id, true, { outcome: 'started' })
+      return
+    }
     const delivery: Delivery = { id, text, entered: false }
     state.deliveries.push(delivery)
     delivery.timer = setTimeout(() => guard(() => settle(state, delivery, 'unknown')), PROMPT_EVIDENCE_DEADLINE_MS)

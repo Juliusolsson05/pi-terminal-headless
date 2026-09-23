@@ -42,7 +42,7 @@ async function until(predicate: () => boolean, label: string, timeoutMs = 15_000
   }
 }
 
-async function launch() {
+async function launch(settings?: Record<string, unknown>) {
   const require = createRequire(import.meta.url)
   const pty = require(process.env.NODE_PTY_PATH ?? 'node-pty') as { spawn(f: string, a: string[], o: object): Pty }
   const { Terminal } = require('@xterm/headless') as { Terminal: new (o: object) => { write(d: string): void; onData(l: (d: string) => void): void } }
@@ -51,6 +51,7 @@ async function launch() {
   const socketPath = join(socketDir, 's')
   const token = randomBytes(24).toString('base64url')
   for (const d of ['home', 'agent', 'project']) mkdirSync(join(root, d), { recursive: true })
+  if (settings) writeFileSync(join(root, 'agent', 'settings.json'), JSON.stringify(settings) + '\n')
   execFileSync('git', ['init', '-q'], { cwd: join(root, 'project') })
   // Load the bridge the way Agent Code ships it: ONE file copied away from
   // its package (out/main/runtime/pi/bridge.ts), with no protocol.ts beside
@@ -117,6 +118,25 @@ describe.skipIf(!LIVE)('bridge extension inside the real pi', () => {
     await expect(server.prompt('in B')).resolves.toEqual({ outcome: 'started' })
     await until(() => events.filter(e => e.name === 'agent_settled').length === 2, 'settle B')
     expect(server.isConnected()).toBe(true)
+  }, 60_000)
+
+  it('a delivered /compact runs Pi’s compaction (never reaches the model as text) and lands a compaction row', async () => {
+    // keepRecentTokens 1, as in the Stage 0 compaction scenario: faux replies
+    // are a few tokens, and Pi refuses to compact a session "too small".
+    const { server, events } = await launch({ compaction: { keepRecentTokens: 1 } })
+    await until(() => events.some(e => e.name === 'session_start'), 'session_start')
+    const start = events.find(e => e.name === 'session_start') as Extract<BridgeEvent, { name: 'session_start' }>
+    for (const text of ['one [probe:lc1]', 'two [probe:lc2]']) {
+      const settled = events.filter(e => e.name === 'agent_settled').length
+      await server.prompt(text)
+      await until(() => events.filter(e => e.name === 'agent_settled').length > settled, 'settle')
+    }
+    await expect(server.prompt('/compact')).resolves.toEqual({ outcome: 'started' })
+    await until(() => events.some(e => e.name === 'session_compact' || e.name === 'session_compact_failed'), 'compaction outcome', 30_000)
+    expect(events.find(e => e.name === 'session_compact_failed')).toBeUndefined()
+    const rows = (await import('node:fs')).readFileSync(start.file, 'utf8').trim().split('\n').map(line => JSON.parse(line))
+    expect(rows.some(row => row.type === 'compaction')).toBe(true)
+    expect(rows.some(row => row.message?.role === 'user' && JSON.stringify(row.message.content).includes('/compact'))).toBe(false)
   }, 60_000)
 
   it('abort stops a streaming reply; closing the host socket leaves pi running', async () => {

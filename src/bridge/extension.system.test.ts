@@ -35,12 +35,13 @@ class FakePi {
 }
 
 function fakeCtx(overrides: Partial<{ idle: boolean; pending: boolean; sessionId: string; file: string; leafId: string | null }> = {}) {
-  const state = { idle: true, pending: false, sessionId: 'sess-1', file: '/sandbox/s.jsonl', leafId: null as string | null, aborted: 0, ...overrides }
+  const state = { idle: true, pending: false, sessionId: 'sess-1', file: '/sandbox/s.jsonl', leafId: null as string | null, aborted: 0, compactions: [] as unknown[], ...overrides }
   return {
     state,
     isIdle: () => state.idle,
     hasPendingMessages: () => state.pending,
     abort: () => { state.aborted += 1 },
+    compact: (options: unknown) => { state.compactions.push(options) },
     sessionManager: { getSessionId: () => state.sessionId, getSessionFile: () => state.file, getLeafId: () => state.leafId },
   }
 }
@@ -148,6 +149,19 @@ describe('bridge extension ↔ host', () => {
       setTimeout(() => { ctx.state.pending = true }, 30)
     }, 5)
     await expect(server.prompt('later')).resolves.toEqual({ outcome: 'queued' })
+  })
+
+  it('/compact runs Pi’s own compaction instead of reaching the model as text', async () => {
+    const pi = new FakePi()
+    const ctx = await started(pi, fakeCtx({ idle: false }))
+    await expect(server.prompt('/compact')).resolves.toEqual({ outcome: 'started' })
+    await expect(server.prompt('/compact  keep the file list ')).resolves.toEqual({ outcome: 'started' })
+    expect(ctx.state.compactions).toEqual([{}, { customInstructions: 'keep the file list' }])
+    expect(pi.sent).toEqual([])
+    // Only the command itself: a prompt that merely mentions it is a prompt.
+    pi.sendImpl = text => pi.fire('message_start', { message: { role: 'user', content: text } }, ctx)
+    await expect(server.prompt('/compactify the docs')).resolves.toEqual({ outcome: 'started' })
+    expect(pi.sent.map(sent => sent.text)).toEqual(['/compactify the docs'])
   })
 
   it('prompt Pi silently drops (the Stage 0 H5 case): "unknown" after the evidence deadline, never ok', async () => {
