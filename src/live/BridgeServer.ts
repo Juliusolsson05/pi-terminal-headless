@@ -51,15 +51,21 @@ export class BridgeServer extends EventEmitter<BridgeServerEvents> {
   }
 
   async listen(): Promise<void> {
+    if (this.closed) throw new BridgeRequestError('closed', 'bridge server closed before listening')
     const server = createServer(socket => this.admit(socket))
     this.server = server
     await new Promise<void>((resolve, reject) => {
       server.once('error', reject)
+      // WHY also settle on 'close': a close() racing this listen (the host
+      // stopping a pane while it is still starting) would otherwise leave the
+      // listen callback — and the host's start() — pending forever.
+      server.once('close', () => reject(new BridgeRequestError('closed', 'bridge server closed while listening')))
       server.listen(this.socketPath, () => {
         server.off('error', reject)
         resolve()
       })
     })
+    if (this.closed) throw new BridgeRequestError('closed', 'bridge server closed while listening')
     // After listening, a server error must not become an uncaught exception
     // in Agent Code's main process; the peer-level events tell the story.
     server.on('error', () => undefined)
@@ -88,6 +94,8 @@ export class BridgeServer extends EventEmitter<BridgeServerEvents> {
     this.failPending(new BridgeRequestError('closed', 'bridge server closed'))
     this.peer?.destroy()
     this.peer = undefined
+    // close() on a server that never finished listening still calls back
+    // (with ERR_SERVER_NOT_RUNNING), so this cannot hang.
     await new Promise<void>(resolve => (this.server ? this.server.close(() => resolve()) : resolve()))
     // The socket file outlives the server on POSIX; the launch helper removes
     // the whole private directory, this is belt and braces for direct users.

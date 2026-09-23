@@ -39,3 +39,11 @@ Tracking issue: Juliusolsson05/agent-code#1132.
   go inert after the first /new because the env is deleted on first load).
   Verified in the real pi 0.87.1 by the opt-in live tier, loading the bridge
   as a single copied file the way the app ships it.
+- 2026-09-22 — Stage 3 + Stage 5: SessionSequencer, root class, launch,
+  PtyBinding, conditions (attention-only pi.dialog / pi.trust), channels, the
+  replay rig and the live tier. Every recording replays end to end through the
+  real root class with real sockets and files; the live tier passes against
+  real pi 0.87.1 (fresh session + tool turn, resume without re-emitting
+  history). Bug found by the tests: stop() during start() hung because a
+  close racing listen() never settled the listen promise — fixed in
+  BridgeServer.listen.
