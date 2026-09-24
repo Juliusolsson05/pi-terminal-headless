@@ -475,32 +475,49 @@ type BridgeState = {
 }
 
 const STATE_KEY = Symbol.for('agent-code.pi-bridge')
-/** Pi's TUI syntax: `/compact` plus optional free-text instructions. */
-const COMPACT_COMMAND = /^\/compact(?:\s+([\s\S]*?))?\s*$/
+/**
+ * Pi 0.87.1's interactive command dispatcher, predicate for predicate
+ * (dist/modes/interactive/interactive-mode.js, setupEditorSubmitHandler).
+ * The TUI trims the submitted text, then matches each command EXACTLY, or,
+ * for the few that take an argument, as `/<name>` followed by a literal
+ * space. Anything else is ordinary input, so `/new is a route` or
+ * `/fork abc` is a prompt to pi, and must stay one here too.
+ *
+ * WHY the dispatcher and not the exported BUILTIN_SLASH_COMMANDS list: that
+ * list is the autocomplete menu, and the dispatcher also handles `/debug`,
+ * `/arminsayshi` and `/dementedelves`, which are not in it. A first version of
+ * this guard used the list and a looser "name then any whitespace" match; the
+ * PR's review caught both (it refused prompts pi accepts and let `/debug`
+ * through to the model).
+ *
+ * WHEN THIS DRIFTS: a Pi upgrade that adds or changes a command lets it
+ * through as model text again (or refuses a new prompt shape). Re-read the
+ * dispatcher on every accepted-version bump.
+ */
+const PI_EXACT_COMMANDS = new Set([
+  'settings', 'scoped-models', 'share', 'copy', 'session', 'changelog', 'hotkeys', 'fork', 'clone', 'tree', 'trust',
+  'logout', 'new', 'reload', 'debug', 'arminsayshi', 'dementedelves', 'resume', 'quit',
+])
+/** Commands pi also accepts as `/<name> <argument>`. `compact` is run by the bridge itself. */
+const PI_ARGUMENT_COMMANDS = new Set(['model', 'thinking', 'export', 'import', 'bug', 'name', 'login', 'compact'])
+
+/** The pi TUI command this (trimmed) text would run, or null for ordinary input. */
+export function piTuiCommand(trimmed: string): { name: string; argument?: string } | null {
+  if (!trimmed.startsWith('/')) return null
+  const name = trimmed.slice(1)
+  if (PI_EXACT_COMMANDS.has(name) || PI_ARGUMENT_COMMANDS.has(name)) return { name }
+  const space = trimmed.indexOf(' ')
+  if (space === -1) return null
+  const head = trimmed.slice(1, space)
+  return PI_ARGUMENT_COMMANDS.has(head) ? { name: head, argument: trimmed.slice(space + 1).trim() } : null
+}
 
 /**
- * Pi 0.87.1's built-in TUI commands (dist/core/slash-commands.js,
- * BUILTIN_SLASH_COMMANDS), minus `compact`, which the bridge runs itself.
- *
- * WHY refuse them instead of forwarding: sendUserMessage never dispatches a
- * built-in command, so `/new` from the host reached the MODEL as a question.
- * Seen with a real model (GLM-5.3), which answered that "/new" looks like a
- * command for the pi interface, while the host was told `started` and waited
- * for a session switch that never came. The session-control ones (/new,
- * /fork, /tree, /resume, ...) exist only on a COMMAND context
- * (ExtensionCommandContext), which a bridge driven by socket requests does
- * not hold. So the honest answer is `rejected` with the reason: nothing
- * reached pi, the host says so, and the user can type it in the pane.
- *
- * WHEN THIS DRIFTS: a Pi upgrade that adds a built-in lets that one through
- * as text again, the same failure as before this list existed. Re-read
- * BUILTIN_SLASH_COMMANDS on every accepted-version bump.
+ * The tag on a TUI-command refusal's reply. The host turns it into its own
+ * result reason (a PERMANENT refusal, unlike "pi is compacting"); the error
+ * text next to it is what a person reads.
  */
-const PI_BUILTIN_COMMANDS = new Set([
-  'settings', 'model', 'tree', 'thinking', 'scoped-models', 'export', 'import', 'share', 'bug', 'copy', 'name',
-  'session', 'changelog', 'hotkeys', 'fork', 'clone', 'trust', 'login', 'logout', 'new', 'resume', 'reload', 'quit',
-])
-const SLASH_COMMAND = /^\/([a-z][a-z:-]*)(?:\s|$)/
+const TUI_COMMAND_REFUSAL = 'tui-command'
 
 function currentBridgeState(): BridgeState | undefined {
   return (globalThis as unknown as Record<symbol, BridgeState | null | undefined>)[STATE_KEY] ?? undefined
@@ -601,8 +618,10 @@ function emit(state: BridgeState, event: BridgeEvent): void {
   guard(() => state.link.send({ t: 'event', at: Date.now(), event }))
 }
 
-function reply(state: BridgeState, id: number, ok: boolean, payload: any): void {
-  guard(() => state.link.send((ok ? { t: 'reply', id, ok: true, result: payload } : { t: 'reply', id, ok: false, error: String(payload) }) as ExtensionFrame))
+function reply(state: BridgeState, id: number, ok: boolean, payload: any, refusal?: typeof TUI_COMMAND_REFUSAL): void {
+  guard(() => state.link.send((ok
+    ? { t: 'reply', id, ok: true, result: payload }
+    : { t: 'reply', id, ok: false, error: String(payload), ...(refusal ? { refusal } : {}) }) as ExtensionFrame))
 }
 
 function settle(state: BridgeState, delivery: Delivery, outcome: PromptOutcome): void {
@@ -668,16 +687,27 @@ function handleRequestUnsafe(state: BridgeState, id: number, request: BridgeRequ
       reply(state, id, false, 'pi is compacting this session; retry when the compaction finishes')
       return
     }
-    const compact = COMPACT_COMMAND.exec(text)
+    // Matched the way the TUI matches: trimmed, exact or `/<name> <arg>`.
+    // (The old `/compact` regex ran on the untrimmed text, so " /compact"
+    // reached the model; the TUI trims first and compacts.)
+    const command = piTuiCommand(text.trim())
+    const compact = command?.name === 'compact' ? command : null
     if (compact && typeof c?.compact !== 'function') {
       // Never fall back to sendUserMessage: that would hand the model the
       // literal text while the host believes a compaction started.
       reply(state, id, false, 'this pi exposes no compaction API to extensions')
       return
     }
-    const builtin = compact ? null : SLASH_COMMAND.exec(text.trim())?.[1]
-    if (builtin && PI_BUILTIN_COMMANDS.has(builtin)) {
-      reply(state, id, false, `/${builtin} is a pi TUI command; type it in the pi pane (sent as a prompt, pi would hand it to the model as text)`)
+    // Every other TUI command: sendUserMessage never dispatches built-ins, so
+    // `/new` from the host reached the MODEL as text (seen with GLM-5.3, which
+    // answered that it "looks like a command meant for the pi interface")
+    // while the host was told `started`. The session-control ones exist only
+    // on a command context (ExtensionCommandContext), which a bridge driven by
+    // socket requests does not hold. So refuse, with a reason the host can
+    // tell apart from a transient refusal: retrying can never succeed, and the
+    // user can type it in the pane.
+    if (command && !compact) {
+      reply(state, id, false, `/${command.name} is a pi TUI command; type it in the pi pane (sent as a prompt, pi would hand it to the model as text)`, TUI_COMMAND_REFUSAL)
       return
     }
     if (!compact && c && c.model === undefined) {
@@ -685,7 +715,7 @@ function handleRequestUnsafe(state: BridgeState, id: number, request: BridgeRequ
       return
     }
     if (compact && typeof c?.compact === 'function') {
-      c.compact(compact[1] ? { customInstructions: compact[1] } : {})
+      c.compact(compact.argument ? { customInstructions: compact.argument } : {})
       reply(state, id, true, { outcome: 'started' })
       return
     }

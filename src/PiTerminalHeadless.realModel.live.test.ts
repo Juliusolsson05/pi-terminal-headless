@@ -13,10 +13,17 @@
 // compaction whose summary is actually generated. This tier checks the
 // host-observable contract under those conditions.
 //
-// Credentials: the sandbox gets a COPY of the user's ~/.pi/agent auth.json,
-// settings.json and models-store.json (which provider/model is the default),
-// in a temp PI_CODING_AGENT_DIR that is deleted afterwards. Nothing is sent
-// anywhere Pi would not send it itself. It costs a few real model calls, so it
+// Credentials: the sandbox gets the user's API-KEY logins from ~/.pi/agent
+// auth.json, plus settings.json and models-store.json (which provider/model is
+// the default), in a temp PI_CODING_AGENT_DIR that is deleted afterwards.
+// Nothing is sent anywhere Pi would not send it itself.
+//
+// WHY API keys only (PR review, finding 1): pi refreshes an expiring OAuth
+// login and writes the rotated token back to the store it read it from,
+// under that store's lock. A copied store would rotate the token in the
+// sandbox, which is then deleted, leaving the user's real login holding a
+// consumed refresh token. An API key never rotates, so a copy is inert. If
+// the default provider logs in with OAuth the tier skips and says why. It costs a few real model calls, so it
 // is opt-in and never runs in CI. PI_REAL_MODEL_OUT keeps the session files it
 // wrote, so the parser codec and the app mapper can be run over real rows.
 //
@@ -25,7 +32,7 @@
 
 import { execFileSync } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
-import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { homedir, tmpdir } from 'node:os'
 import { basename, join } from 'node:path'
@@ -41,7 +48,25 @@ import type { PiSessionRow } from './transcript/SessionFile.js'
 import { waitUntil } from './testing/replay.js'
 
 const USER_AGENT_DIR = process.env.PI_REAL_MODEL_AGENT_DIR ?? join(homedir(), '.pi', 'agent')
-const LIVE = process.env.PI_TERMINAL_HEADLESS_REAL_MODEL === '1' && Boolean(process.env.PI_BINARY) && existsSync(join(USER_AGENT_DIR, 'auth.json'))
+
+/** The user's API-key logins only; null (skip) when the default provider's login is not one. */
+function apiKeyLogins(): Record<string, unknown> | null {
+  try {
+    const auth = JSON.parse(readFileSync(join(USER_AGENT_DIR, 'auth.json'), 'utf8')) as Record<string, { type?: string }>
+    const settings = existsSync(join(USER_AGENT_DIR, 'settings.json')) ? JSON.parse(readFileSync(join(USER_AGENT_DIR, 'settings.json'), 'utf8')) as { defaultProvider?: string } : {}
+    const keys = Object.fromEntries(Object.entries(auth).filter(([, login]) => login?.type === 'api_key'))
+    if (settings.defaultProvider && !(settings.defaultProvider in keys)) {
+      console.warn(`real-model tier skipped: ${settings.defaultProvider} is not an API-key login (an OAuth copy would rotate the real login's token)`)
+      return null
+    }
+    return Object.keys(keys).length > 0 ? keys : null
+  } catch {
+    return null
+  }
+}
+
+const LOGINS = process.env.PI_TERMINAL_HEADLESS_REAL_MODEL === '1' && Boolean(process.env.PI_BINARY) ? apiKeyLogins() : null
+const LIVE = LOGINS !== null
 const BRIDGE = fileURLToPath(new URL('./bridge/extension.ts', import.meta.url))
 const OUT = process.env.PI_REAL_MODEL_OUT
 // A real turn takes seconds, and a slow provider tens of seconds.
@@ -50,8 +75,15 @@ const TURN_MS = 150_000
 type Pty = { pid: number; write(d: string): void; resize(c: number, r: number): void; kill(s?: string): void; onData(l: (d: string) => void): unknown; onExit(l: (e: { exitCode: number; signal?: number }) => void): { dispose(): void } }
 
 const cleanups: Array<() => void | Promise<void>> = []
+// Every step runs even when an earlier one throws: the export runs first and
+// may fail on an unwritable PI_REAL_MODEL_OUT, and that must not skip killing
+// pi or deleting the credential copy.
 afterEach(async () => {
-  for (const cleanup of cleanups.splice(0).reverse()) await cleanup()
+  const failures: unknown[] = []
+  for (const cleanup of cleanups.splice(0).reverse()) {
+    try { await cleanup() } catch (error) { failures.push(error) }
+  }
+  if (failures.length) throw failures[0]
 })
 
 async function spawnRealPi(label: string) {
@@ -61,8 +93,13 @@ async function spawnRealPi(label: string) {
   // Outside any repository: Pi loads AGENTS.md and asks for trust from
   // ancestor directories (Stage 0 tooling note).
   const root = mkdtempSync(join(realpathSync(tmpdir()), 'acpi-real-'))
+  // Registered FIRST (PR review, finding 3): whatever fails after this point,
+  // a bad PI_BINARY or a malformed settings file, the credential copy goes.
+  // Runs last, after the pi teardown registered below.
+  cleanups.push(() => rmSync(root, { recursive: true, force: true }))
   for (const d of ['home', 'agent', 'project']) mkdirSync(join(root, d), { recursive: true })
-  for (const file of ['auth.json', 'settings.json', 'models-store.json']) {
+  writeFileSync(join(root, 'agent', 'auth.json'), JSON.stringify(LOGINS), { mode: 0o600 })
+  for (const file of ['settings.json', 'models-store.json']) {
     if (existsSync(join(USER_AGENT_DIR, file))) copyFileSync(join(USER_AGENT_DIR, file), join(root, 'agent', file))
   }
   // WHY keepRecentTokens 1: Pi keeps the most recent ~20k tokens out of a
@@ -97,20 +134,31 @@ async function spawnRealPi(label: string) {
   headless.on('session-switched', event => switches.push(event))
   headless.on('live-state', state => live.push(state))
   headless.on('exit', () => { exited = true })
-  await headless.start()
+  // Teardown before start(): a start that throws still kills pi. The export
+  // is its own step, so an unwritable PI_REAL_MODEL_OUT can never skip the
+  // kill or the sandbox removal (PR review, finding 3).
   cleanups.push(async () => {
-    if (OUT) {
-      // Keep what pi wrote, for the codec and mapper passes over real rows.
+    try {
+      if (!exited) pty.kill('SIGKILL')
+    } finally {
+      await headless.stop()
+    }
+  })
+  if (OUT) {
+    cleanups.push(() => {
+      // Every session file pi wrote in the sandbox, not only the current one:
+      // after /new the file holding the real compaction is a switch SOURCE,
+      // and it is the one the codec pass most needs (PR review, finding 6).
       const dir = join(OUT, label)
       mkdirSync(dir, { recursive: true })
-      for (const file of new Set([headless.getTranscriptFile(), ...switches.map(s => s.to.file)])) {
-        if (file && existsSync(file)) copyFileSync(file, join(dir, basename(file)))
+      const sessions = join(root, 'agent', 'sessions')
+      if (!existsSync(sessions)) return
+      for (const project of readdirSync(sessions)) {
+        for (const file of readdirSync(join(sessions, project))) copyFileSync(join(sessions, project, file), join(dir, basename(file)))
       }
-    }
-    if (!exited) pty.kill('SIGKILL')
-    await headless.stop()
-    rmSync(root, { recursive: true, force: true })
-  })
+    })
+  }
+  await headless.start()
   await waitUntil(() => live.some(s => s.connected), 30_000, 'bridge connected')
   return { root, pty, headless, entries, semantic, errors, history, switches }
 }
@@ -150,7 +198,10 @@ describe.skipIf(!LIVE)('PiTerminalHeadless with the real pi and a real model', (
     await waitUntil(() => pi.headless.getActivity().active === true, 30_000, 'first turn running')
     // H5 from Stage 0: a busy prompt without deliverAs followUp is accepted
     // and silently dropped. The bridge must always queue it.
-    await expect(pi.headless.submitPrompt('Now reply with just the word DONE.')).resolves.toMatchObject({ ok: true })
+    // `queued` is pi's own evidence the prompt arrived while it was busy, the
+    // case this test is about; `started` would mean the first turn had
+    // already ended and nothing here was tested (PR review).
+    await expect(pi.headless.submitPrompt('Now reply with just the word DONE.')).resolves.toEqual({ ok: true, outcome: 'queued' })
     await waitUntil(() => {
       const users = pi.entries.filter(r => roleOf(r) === 'user').length
       return users === 2 && idle(pi.headless) && count(pi.semantic, 'turn_started') === count(pi.semantic, 'turn_completed')
@@ -181,7 +232,7 @@ describe.skipIf(!LIVE)('PiTerminalHeadless with the real pi and a real model', (
 
     // Sent from the host, a built-in command is refused with its reason: this
     // run is where `/new` was first seen reaching the model as plain text.
-    await expect(pi.headless.submitPrompt('/new')).resolves.toMatchObject({ ok: false, reason: 'rejected' })
+    await expect(pi.headless.submitPrompt('/new')).resolves.toMatchObject({ ok: false, reason: 'tui-command' })
     expect(readFileSync(firstFile, 'utf8')).not.toContain('"text":"/new"')
     // Typed into the TUI, as the user does, it runs. Text and Enter are
     // written separately: Pi's editor opens its command autocomplete on "/",

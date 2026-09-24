@@ -95,7 +95,10 @@ export type RequestFrame = { t: 'request'; id: number } & BridgeRequest
 
 export type ReplyFrame =
   | { t: 'reply'; id: number; ok: true; result: { outcome: PromptOutcome } | { aborted: true } | BridgeState }
-  | { t: 'reply'; id: number; ok: false; error: string }
+  // `refusal: 'tui-command'`: the text is one of pi's own TUI commands, which
+  // the bridge cannot run (see extension.ts piTuiCommand). Permanent, unlike
+  // an untagged refusal such as "pi is compacting".
+  | { t: 'reply'; id: number; ok: false; error: string; refusal?: 'tui-command' }
 
 export type ExtensionFrame = HelloFrame | EventFrame | ReplyFrame
 export type HostFrame = RequestFrame

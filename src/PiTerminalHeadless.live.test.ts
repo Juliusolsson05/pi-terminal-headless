@@ -94,6 +94,10 @@ describe.skipIf(!LIVE)('PiTerminalHeadless with the real pi', () => {
     const { rows } = await readPiBranch(file)
     expect(entries.map(r => r.id)).toEqual(rows.map(r => r.id))
     expect(headless.getActivity()).toMatchObject({ active: false, status: 'idle' })
+    // Through the real bridge inside the real pi: one of pi's own TUI
+    // commands is refused as permanent, and never reaches the model.
+    await expect(headless.submitPrompt('/new')).resolves.toMatchObject({ ok: false, reason: 'tui-command' })
+    expect(completed(semantic)).toHaveLength(1)
   }, 60_000)
 
   it('resume after exit: history is not re-emitted, the new turn is', async () => {

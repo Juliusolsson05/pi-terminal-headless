@@ -29,7 +29,7 @@ export type BridgeServerEvents = {
 }
 
 export class BridgeRequestError extends Error {
-  constructor(readonly code: 'no-live-channel' | 'timeout' | 'rejected' | 'closed', message: string) {
+  constructor(readonly code: 'no-live-channel' | 'timeout' | 'rejected' | 'closed', message: string, readonly refusal?: 'tui-command') {
     super(message)
     this.name = 'BridgeRequestError'
   }
@@ -206,7 +206,7 @@ export class BridgeServer extends EventEmitter<BridgeServerEvents> {
       this.pending.delete(frame.id)
       clearTimeout(pending.timer)
       if (frame.ok) pending.resolve(frame.result)
-      else pending.reject(new BridgeRequestError('rejected', String(frame.error ?? 'rejected')))
+      else pending.reject(new BridgeRequestError('rejected', String(frame.error ?? 'rejected'), frame.refusal === 'tui-command' ? 'tui-command' : undefined))
     }
   }
 
