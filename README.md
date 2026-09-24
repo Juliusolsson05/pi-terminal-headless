@@ -49,6 +49,16 @@ Tests are built from recordings of the real Pi TUI, made in a sandbox
 (isolated agent dir, Pi's scripted `faux` provider). See
 `testing/fixtures/README.md`.
 
+The real-model tier runs the same contract against a logged-in Pi and a real
+model (thinking blocks, real tool calls, a generated compaction summary). It
+copies `~/.pi/agent`'s auth and settings into a temp sandbox, costs a few model
+calls, and never runs in CI:
+
+```bash
+PI_TERMINAL_HEADLESS_REAL_MODEL=1 PI_BINARY=<path to pi> NODE_PTY_PATH=<node-pty dir> \
+  [PI_REAL_MODEL_OUT=<dir to keep the session files>] npm run test:live -- src/PiTerminalHeadless.realModel.live.test.ts
+```
+
 ## License
 
 MIT

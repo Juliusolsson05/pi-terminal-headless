@@ -273,6 +273,46 @@ describe('bridge extension ↔ host', () => {
     expect(pi.sent).toEqual([])
   })
 
+  // Found with a real model: `/new` sent as a prompt reached GLM-5.3 as text
+  // ("looks like a command meant for the pi interface") while the host was
+  // told `started`. The refusal mirrors pi 0.87.1's own TUI dispatcher
+  // (interactive-mode.js setupEditorSubmitHandler): trimmed text, exact
+  // matches, and `/<name> <arg>` only for the argument-taking commands. The
+  // "still prompts" half is the PR review's list of false refusals.
+  it('pi’s TUI commands are refused as permanent, exactly as the TUI matches them; everything else is still a prompt', async () => {
+    const pi = new FakePi()
+    const ctx = await started(pi)
+    const commands = ['/new', '  /tree  ', '/resume', '/fork', '/debug', '/arminsayshi', '/dementedelves', '/quit', '/model', '/model glm-5.3', '/thinking high', '/name my session', '/login zai']
+    for (const command of commands) {
+      await expect(server.prompt(command)).rejects.toMatchObject({ code: 'rejected', refusal: 'tui-command', message: expect.stringMatching(/pi TUI command/) })
+    }
+    expect(pi.sent).toEqual([])
+    pi.sendImpl = text => pi.fire('message_start', { message: { role: 'user', content: text } }, ctx)
+    const prompts = ['/new is a route; document it', '/settings explain this directory', '/fork abc', '/tree contains these files', '/model\tfoo', '/model\nexplain the directory', '/newsletter draft', '/usr/bin is on PATH?', '/skill:review go', '/NEW', '/my-extension-command go']
+    for (const prompt of prompts) {
+      await expect(server.prompt(prompt)).resolves.toEqual({ outcome: 'started' })
+    }
+    expect(pi.sent.map(sent => sent.text)).toEqual(prompts)
+  })
+
+  it('a transient refusal carries no TUI-command tag, so the host can still tell "retry later" from "never"', async () => {
+    const pi = new FakePi()
+    const ctx = await started(pi)
+    pi.fire('session_before_compact', { reason: 'manual' }, ctx)
+    const refusal = await server.prompt('during compaction').catch((error: unknown) => error)
+    expect(refusal).toMatchObject({ code: 'rejected' })
+    expect((refusal as { refusal?: unknown }).refusal).toBeUndefined()
+  })
+
+  it('/compact is matched the way the TUI matches it: trimmed, with instructions after a space', async () => {
+    const pi = new FakePi()
+    const ctx = await started(pi, fakeCtx({ idle: false }))
+    await expect(server.prompt('  /compact  ')).resolves.toEqual({ outcome: 'started' })
+    await expect(server.prompt('/compact keep the file list')).resolves.toEqual({ outcome: 'started' })
+    expect(ctx.state.compactions).toEqual([{}, { customInstructions: 'keep the file list' }])
+    expect(pi.sent).toEqual([])
+  })
+
   it('without the env (someone ran pi -e by hand) the extension is inert', () => {
     delete process.env[BRIDGE_SOCKET_ENV]
     delete process.env[BRIDGE_TOKEN_ENV]

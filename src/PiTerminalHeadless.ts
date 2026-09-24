@@ -51,6 +51,12 @@ export type SubmitPromptResult =
    * resubmit it automatically (the #877 lesson, from the other direction).
    */
   | { ok: false; reason: 'no-live-channel' | 'rejected' | 'unknown'; message?: string }
+  /**
+   * The text is one of pi's own TUI commands (`/new`, `/tree`, `/model x`,
+   * ...), which cannot be run from outside the TUI. Nothing reached pi, and
+   * retrying never helps: the user has to type it in the pane.
+   */
+  | { ok: false; reason: 'tui-command'; message: string }
 
 export type PiTerminalHeadlessEvents = {
   activity: [PiActivity]
@@ -217,7 +223,7 @@ export class PiTerminalHeadless extends EventEmitter<PiTerminalHeadlessEvents> {
     } catch (error) {
       if (error instanceof BridgeRequestError) {
         if (error.code === 'no-live-channel') return { ok: false, reason: 'no-live-channel', message: error.message }
-        if (error.code === 'rejected') return { ok: false, reason: 'rejected', message: error.message }
+        if (error.code === 'rejected') return error.refusal === 'tui-command' ? { ok: false, reason: 'tui-command', message: error.message } : { ok: false, reason: 'rejected', message: error.message }
         // timeout / closed after sending: the text may or may not arrive.
         return { ok: false, reason: 'unknown', message: error.message }
       }
